@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MP Grupo de Extratos — Milhas Plus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Identidade visual do MP Financeiro (cores, listras, Caveat + Nunito, tema claro e escuro) */
+:root{
+  --ac:193,86,26;
+  --bg:#F1F2F0;
+  --sup:#E3E5E1;
+  --line:#D5D8D2;
+  --soft:#EAECE8;
+  --card:#FBFCFA;
+  --ink:#14181B;
+  --fraco:#6B7370;
+  --alerta:#9B5B10;
+  --erro:#9B3B32;
+  --marca:#F6E7D3;
+  --erroFundo:#F7E3E0;
+  --listra:rgba(20,24,27,.035);
+  --verde:#3E8E5A;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,monospace;
+}
+body.escuro{
+  --ac:226,126,64;
+  --bg:#15181A;
+  --sup:#1F2426;
+  --line:#2E3538;
+  --soft:#202628;
+  --card:#1A1F21;
+  --ink:#E9ECEA;
+  --fraco:#98A29F;
+  --alerta:#E0A653;
+  --erro:#E08175;
+  --marca:#3A2C1B;
+  --erroFundo:#37201D;
+  --listra:rgba(255,255,255,.028);
+  --verde:#63B183;
+  --mono:ui-monospace,'SFMono-Regular',Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  color:var(--ink);background:var(--bg);
+  font-size:16px;line-height:1.5;min-height:100vh;
+  padding-bottom:26px;-webkit-text-size-adjust:100%;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:repeating-linear-gradient(135deg,var(--listra) 0 1px,transparent 1px 10px);
+}
+h1,h2,h3{margin:0;font-weight:700}
+input,textarea,select,button{font-family:'Nunito',system-ui,sans-serif}
+::placeholder{color:var(--fraco);opacity:.75}
+:focus-visible{outline:2.5px solid rgb(var(--ac));outline-offset:2px}
+
+/* ---------- barra do topo ---------- */
+.topo{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  position:sticky;top:0;z-index:20;background:var(--sup);
+  border-radius:0 0 18px 18px;padding:10px 16px;
+}
+.topo .logo{display:flex;align-items:center;gap:11px;min-width:0}
+.topo img{width:36px;height:36px;border-radius:10px;display:block;flex:none}
+.topo strong{
+  display:block;font-family:'Caveat',cursive;font-weight:700;
+  font-size:1.7rem;line-height:1;color:rgb(var(--ac));
+}
+.topo .logo span{font-size:.73rem;font-weight:700;color:var(--fraco)}
+.tema{
+  width:38px;height:38px;padding:0;flex:none;font-size:1rem;cursor:pointer;
+  border-radius:999px;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);
+}
+.pagina[hidden]{display:none}
+.selo{
+  font-size:.78rem;font-weight:800;color:var(--fraco);
+  background:var(--sup);border-radius:999px;padding:6px 13px;white-space:nowrap;
+}
+/* ---------- página ---------- */
+.app{max-width:none;margin:0;padding:0 clamp(4px,1.4vw,26px)}
+.cabeca{
+  display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  padding:26px 18px 4px;
+}
+.cabeca h2{font-family:'Caveat',cursive;font-weight:700;font-size:2.1rem;line-height:1;color:rgb(var(--ac))}
+.cabeca p{margin:5px 0 0;font-size:.83rem;color:var(--fraco);font-weight:600;max-width:62ch}
+@keyframes gira{to{transform:rotate(360deg)}}
+@media(max-width:899px){
+  .cabeca{padding:18px 14px 0}
+  .cabeca h2{font-size:1.8rem}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script>
+/* ícone da Milhas Plus embutido, sem depender de arquivo externo */
+const ICONE = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAVuElEQVR42u2dbWxcZ5XH/+c8d65nPLbjvNtOsi30PX1J2qoSbEntKjVU0LKVWjsUJPhAK3YFQqBdtAVVdd0PiF1YgRC7C0J8WFZosd1ou21XWwhR7CaFSogWWkjbtCltkzhOExonfpnx3Pucsx/ujOsEJyRp7MzMPT8pX9Kkzr33/3/OOc/LeQiLSF8fuGsYPNwF6e+HVH5/sAeuDW1XhAFdPhPTtSC9BsBlDOQF1MGEJlEoAIJRCygTSBSTDB0VYArAq1D6fUOgL5Zi3TOGsVd6h+D/kjYWmkURlPaBsRtEcx74V1tWX+wp+BCgH4biBlG9JHScdQxAgVgBVcCrQtQUVYswAY4IREBAidq8ACUvRSbaC8JzAP3cabzrgwOH3pjVSw8c1kNpEYywoAYY7IHrGYIQoADw7KfWrFXRO1Vxl1dsaspwTgGUvCIShQgElPxZKEiTd2ejfi2HAkBJoXO/KzM4w4TQEQjAZCQFR9hJhMeI6YkP/OTA/vLfpaEe8NxIURMG0D4wAFQc/Exv200K/hwI9+QzvCQWRcErROEJUCgYybswsafFF4kpRAFigss5QsCEqUiOQfEoQX5w8+DYr+fTU9UaQAEa7oS7dQQxAOz8RHu3U/6KErpzAWEqEvhE9NAkQprgjSRKIMl0HcHlM4xCrCDFNk/yzU0/PbgNAHZ0IugaKQ+a1WaAwR64Sqh6+u411wUZfShguptAmIpFCfAKOBO9cQZm8Aq4fMCkUMSiW+OIHrll64EXTtZaVRhgRyeCW0cQP35He+OyRnqIGV9qcNwwURKhJPdz9mmNc8CrgppD5hkvMyL4zjvT+sjHnzw4XdHcBTWAAoQ+EPVDtve23dLo+Lu5gDccmxEo4MmEb5yfqOAJcEsaGIVYfjft5YubB8ee1j4w+qHvJSXi95LyEJKpqp1b2h/IsRtm0IbxosRIwpiJ3zhfeboDoONFiRm0IcdueOeW9geoP5lhHOw5d63RuYq/dwh+x73tK0LBjxoz7uMTJRFRgOjcTWUYfzEaKIQJaA6ZpyP/eInx2Vv/6+CRc60LztoA2gNHQ/Db7uq4vClLA7kMbRwvSgxK1joMYxFSIkARt2Y5KET628mibul+bHRPRZsLlgLt6ERAQ/Dbe9dsaMrSLsfYOF6UmEz8xuKmRCBCMF6U2DE2NmVp1/beNRtoCH5HJ4IFMcBgTzK/v713zYZGxjYirJyONCY6ux9oGOfNCISgrMGVjYxt23vXbLh1BPHZ1AR8puLvHYL/WU/HxkaXiL/o1Zv4jWowQVmLKxsdtv2sp2Nj7xD8mZqAzlT827esvCSH8FlmrCh6tSlOo9rqAp915ERwpIDSBzYPHN57JoXxaUXc1wf+/ErgI6vWLg2I/y/j6H3TXj2b+I3qqws4UvhsQE2s3HXf+iWDH1l/vIgu0MjIqdcJTpsCdQ2DqR9SIv/jfMjXTUcam/iNaoUBNx1pnA/5uhL5H1M/pGv49Bo/5X+sLDXv6Gl/oDV0HxsvSmQ5v1ELNcF4UaLW0H1sR0/7A7eOID7dzBCdNu+/u+OvG0N6JhL1qmDYRjajRkoCIkiGyU2X9ObNW0d/eap6gOcpJggA9tx+aUMY4IcMVE5kmfiNmgkEoom4wwA/3HP7pQ1ztX36FKh8Ame0efrh5pDXF2KNbcbHqMGi2BVijZtDXj/aPP1w7xA8ev5c73xy6oMhyPCWtqsaHL48URJPZOI3arYecBMl8Q0OXx7e0nYVhiAnrw/wPM5RFfpG6LjBW+pj1LgHvAKh4wYV+sZ826ZnxV3ZSLRzy5qurMOO6Vg9LPUx6gPfGJArety6aeDA8NxNc7MR4OH1iTu8SB9Aap1IjHqhnMhoou13tT4bASpTRMN3d1yfydBvIlHY2V2jzkygGSZEkd7YtXX0+YrmGQBWvp2InZx+IRcQERauD4thXJBiAPC5gIicfuEEzfcB3A/IL3rWrmkg2Q1Cs08mTC0CGHUVAVzSj2diRnn9bUP7D/QBzF2dSR2QgdzZFHJLuVmVid+otwhAovBNIbdkIHcCQFcnmLu6km5bCr0nVrUGtEZd+yBWVYXeAwBdXRACgJEtHetI9VWAGhTWhdmo30woyW50Roku6xwY3Zf0XBTpbA5dgyTFr4nfqNsIIIBvDl0DiXQCs+sAfHt52Lfpf6Pea4HyGhffDgCBAvQ0cEPkFapgotp5FHK2UP1nMV4VEJvFPvX7AUdeocANChDt6um4QgjPEyHntZIjVb/4VTz89HH7oid+XnAQghubARF7HfO+IagjkCoKrLg+UKfrQ+Jc0WttiJ8IGpcQLm3D2s88bF90zsjPLsCfdj+Ld0YGEDQthVokmC8FIq/QrKNcpLI+8J6uzYUAeQhqYvMbQX2MTPNSrLvjc/ZFTyLzoR5ELoPJ7f8Jbl5m6dD8JpCA4YolujYA61WqVHOPoOIRlQr2NU8IjgQ/dQzL730QzIzj2/7DTHDqWgBgvSqA4MqYZm9sqSkTkLMz+icbAACkMIHl9z4IKHD8F2aCeeoAjgWA4EomIG9zn3XlAkABKUxi+b0PouW2z0Am3gHYZsxOMgEIyDOI2r3a9uf6M4HORgIzwXyFsAJE7Vy+hNqoRxMAkKKZYD4kyfmbuHwDu1HX6ZCZ4BQmUGt2lZZIYCaY9+3YdUaWDqUaM4ClQ2YAw9IhM4Bh6ZAZwLB0yAxgWDpkBjAsHTIDGJYOmQEMS4fMAIalQ2YAw9IhM4Bh6ZAZwLB0yAxgWDpkBjAsHTIDGJYOmQEMS4fMAIalQzWFNdYxzsIEDEAgxUks/+SDAJX7DuVbZ3sumwGMC4qqQha8Ma5Apo5hae/XoKKY3DkAChsBFTOAcWHF37pkKZqbW0AL3etAFWDGir/9Jna/9hsUDu4Fh7maM4EZoM7IZnOzLRIXwXFJIRk2WApkVE8U0MUUo2rNih+wWSDjPRfGtd1WygxgpBozgGEGMAwzgGGYAQzDDGAYqSG16wBaxXPXycyida03AyyQ8JkZQRVfsCcq8N4v3oquGSAl4ofCOYdSqYSxo2OI4ygRWTUFA0KynyffDG83O5oBzieOHAqFAl5+9SUUClOzBz2qjf0H9uGS912GVStWIfaxRQIzwPkbXd9463UUCtMIMw2o1uvRRAR/fHMvmpub0RA2VHW9YgaoFe0ToRTNYKpQQBAEkCretsvMiOMYU1OTyGVziGOLAgv2rtNU/AYuQOAcRKQmBBWGIVTVxG8R4PwZYE17B17d+2pVp2lxFKNtVRua8i2LcLrLDJCaFMhLjFUr20DEGDs0BhGfTLdXWYrd2roUazvWAXaFsxngfA+vsY+xcsUqrFi2smrrAOccvPdW/FoNsBAWIMRxXNVFcBzHpkwzwMKmQ/bvM1JrAMMwAxiGGcAwAxiGGcAwzACGkTpSeSKsciimKpeBF53kHdTK/igzwPl46CBAqVQqn7pKrwUISVdD5xzCMIT33gxQ9zkfM97a9ybePnwIooq0rzmpAkyEVStXY93av0rd5rt07QYNAuzb/ybe2v8GMkEIUOVwfFpdkDy7F+Ct/W+ACFi39qJUnT9ITRHMzIiiCG8fOYwgyMz5wGkOAcmzExGCIIO3jxxGFEXl+ghmgPqLApIcMAFV7XHICxMHyu9EFaqWAtUlIoIw04AlzS04dPgQwjA05c+hFJWwbOkyhJmGVB3ET9WBGFHBxRe9H1EcYfzYuKl+DsuWLsPFF70foumaDk1XXyBN+gJdedl6HJ88ZofN50wOtDQtmTMpYClQXX9wIGk+ZbyL9z6VCyKp7Q1qp67+PEVMI4F9cCPN2GY4wwxgGGYAwzADGIYZwDBSg12RtMDYbJMZoOogIjgXLMo+ULvuyAxQXTlfuff+kT8dThbDaCGPRRJamlvQ1Nhk1x2ZAapj5J+ZmcErr76EyanJRTkS7JzD+y++BKtWrLbrjswAF94Af3zzdUxOTSzaFUkigtfffB1N+SZks7lkt6VdgWoGuBDij6ISpqanEASZResOzcyI4gjHJyeQb2yCxGJXAFdTSpyWB01aoTg45gty7VAmk7FTaGaAC2uAIAjQtrodsY9nL6BY6F+lUglLlyxFa0urzQZZCnRhUyDvPdrbOkBEGHt7LGkGtcA/d8Xylbho3cUgIrvxxQxw4fHeo211O1auWJX0wFnAmaCk20IAETHxmwGqh8pRSOdcIswFCQOJs+zYpdUAVZkOVeqCBaw6TvhZhhnAMMwAhmEGMAwzgGGYAQzjghLYK0DSJD+N2AxVig2gChUBuQAUpPM1qPdQH4OYU2uGdN4RJgLONCAAEMclRMeOpk8AqgjyS5AJs/AAJJpJjGAGqHfxewSZLIpH9mP///wrxn//DErjb4OIU6Z/Qdi6Cq3X3Iy1f/N5ZFesRRwVQezMAPUu/vE/PIPd3/osiofehMvmQRwgfZ1hCdGxIzj+yq/x9q7/xvp/+BFar745dSZIjwFUwS6D4uF92P2t+1A6egjh0jaoj5HWeyIJGbhcM0pHD2H3t+7DDf/8c4TLO6DiU5MSpuc8gHg4dtj/xPdRPPQGMk2t0LgEqCSzQKn8JdC4hExTK4qH3sD+J74Pxy4xQEpIjQHIZRDHJYy/uBMum4f6CEZlNiiCy+Yx/uJOxHEJ5DJmgHpLf8gFiCaPonT0EMgFsO35J7wekAtQOnoI0eRRkAtSszaSnqkP8XDZJgT5llSF+LOaIMi3wGWbAEuB6i3/IUgcIczm0Xzp9ZCZAsg5U/1seuggMwU0X3o9wmweEkdWBNelCVTQ8dH7wWEOGkVJqE+9+ANoFIHDHDo+en/SLsZuiazDD80MH5fQesVNuPS+r2PPv/89yDm4hsZkBVSRnn495WdVEcTTx6He4/K/+xe0XnETIlsHqGcTOERREWs+ej+yqy/Gmz/9J0ztexnx9GTStSEl6wGVW+FdLo+Wy27ERZ/4Ryy/sTt14k+dASomiKMZLL+xG8tuvA1T+15B6Z2DALv07AolAsQjXNaO/LorQCDE0UzqxJ9KA1TSoWTJn5FfdyWa1l2ZyvxfAYgvJbtiOZ2TAum9JrX8wSWeSW3PHiICiFMr/lQbYI4T7FxIirEjkYYZwDDMAIZhBjAMM4BhpMoAtjHYSCvKbDe2GWkd/QnEophks4CRPvFDFJMM1YOOCGqpkJGWvAdQRwSoHmQFpiwAGGmjfDPWVADGywFjY0kgAFwt+ThpaWJUxZhaW+KXgOFmFC8HEHqJgtp74cQOmTBn2qsGQbGrPRMQAKGXAuf0xVgImtQFtSF+FyCaOIp9T/7A1FcFRBPlThI1YgIFOBbAOX2RdvV0XCGE54mQ8wqlmjgYSFDx8NPHTX1VgGtsqZkokBTAIFUUWHE9KUBP93T8IRvQVYVYhahWVofJOjtUi6i8r53RXyG5gLgY60u3DI1eHRCgTwPPZRxdVfQqqJntEVYEG+eU+0vGEc/E+hwBWha7PFWeFrIZUaO+o9Vs0xd5CpXRXplHJkp+hpNpUFsQM+pW/wy4iZKfUeYRAGDtA3cOjO4Txa5chhSA2Hsy6hTJZUhFsatzYHSf9oF5eDiJAgR6NCAiiwBGPUeAgIgI9CgADA+DeXgkGfEj8BOTJTnOBGf7gow6zP2VCW6yJMcj8BMAMDwC4X5AdnQiuG1o/wGBPprPMBFg7ZONuoIAn88wCfTR24b2H9jRiaAfEAaAw6uSEV89fa8Qq2pN7QkyjDOKAK4Qq6qn783VPANA7xB8Xx+4a+vo85GXkXzAUIsCRv2I3+cDRuRlpGvr6PN9feDeoUTfs4teD+9O1gAccz+g1ivKqKf0B4BSou13tX6CAWgIfrAHbtPAgeHJSB5vyrCzKGDUw+jflGE3GcnjmwYODA/2wNHQu7rmef4CEesDJS8zjiq/ZRi1qX9HQMnLDLE+MN9OhxMM0DsEjx5w18DYSzMe324O2alaFDBqVP0K3xyym/H4dtfA2EvoeTf3PzE9OikCDPWAN05cGhxaMv1cyLS+4NWTzQwZNZb65By5kuju1ccab/ht82txzxCETspoeJ6CQQHg8qdemynFuF8we1LGUiGjZvTPlOzpKcW4//KnXpuZq+3TGqCSCu3oRLB56+gvi7F8tSXDThW299ioldQnbsmwK8by1c1bR3+5oxPByanPKVOguezoRHDrCOLh3vYnWxvcx8aLEhPZnQJGdYu/NcvB+Iz/367Bg3dUNHyqP3/awy/DXRDtA4fqPj1VkhcaMxSITY0aVYoAvjFDwVRJXgjVfVr7wMNdp9/dfNrCdmQEevUq8O1Dx6c/dU12m1P3ydBRU6zwZI11jSoser3gSBFRd+fg2OjVq8Bf+LfTG+Aviri3vEC2eeDw3gnRbgUOZx3ZIplRVeIva/LwhGj35oHDewd74E6V959xDTCXyv9we++aDY2MbURYWYzVagLjguf82YACVRyeFnRvHjzwuzMV/1kZYG5RXDGBY6ycjswExoUTf2OGAi/viv8vFb3vyQAAoOW9FNvu6ri8KUsDuQxtHC9KDEJgG+iMRUp5gPJsTyHS304WdUv3Y6N79KR9PmfCWReylU1z3Y+N7imSdE+V/ONLGjhgQFTtPLGx4KO+MCBLGjiYKvnHiyTd3Y+N7hk8B/GfUwQ4uSYAgJ1b2h9wxF93BCokdYGDtVgxzrf2FT4XUOAV6lW+tmng4DdO1uKiGaAcigh9IOqHbO9tu6XR8XdzAW84NiNQwPYPGecr5fEEuCUNjEIsv5v28sXNg2NPax8Y/VB6D9t0zssoXSk8Hr+jvXFZIz3EjC81OG6YKIkkd2+YEYxzwquCmkPmGS8zIvjOO9P6yMefPDh9tsXughrg5DD09N1rrgsy+lDAdDeBMBWLEuAVcGSpkXH60X5WK/mASaGIRbfGET1yy9YDL7zXlGfBDFBJiYY74SrO3PmJ9m6n/BUldOcCwlQk8MkqcqUdu5nBqIheFIAjuHyGUYgVpNjmSb656acHt1Uyja4ReDqPO5MXRIDaV2621Z/MCj3T23aTgj8Hwj35DC+JRVHwCtHywygYyW2VZoi0aF6hIIgCxASXc4SACVORHIPiUYL84ObBsV/Pp6fzyYIKbrAHbu4hhGc/tWatit6piru8YlNThnMKoOQVkShEIKCyuxWkBLIoUQejeyL22e/KDM4wIXTJqDcZScERdhLhMWJ64gM/ObC/klEMzXOKq2YMcEJE2A2aO0/7qy2rL/YUfAjQD0Nxg6heEjrOuvLV3bECqkkVJHYUpyZhAhwlo1hQju9egJKXIhPtBeE5gH7uNN71wYFDb8zqpQcO66ELMeJfEANU6OsDdw0nW1T75zzcYA9cG9quCAO6fCama0F6DYDLGMgLqIMJTaJQS5FqZ+BnApXv4R0VYArAq1D6fUOgL5Zi3TOGsVfmjuyn0sZC8/9uOuyrj82IMwAAAABJRU5ErkJggg==';
+</script>
+</head>
+<body>
+
+<header class="topo">
+  <div class="logo">
+    <img id="selo-icone" alt="" width="36" height="36">
+    <div>
+      <strong>Milhas Plus</strong>
+      <span>Grupo de extratos</span>
+    </div>
+  </div>
+  <button class="tema" id="btTema" aria-pressed="false" title="Alternar claro e escuro">☾</button>
+</header>
+
+<main class="app">
+<section class="pagina" id="pg-extratos">
+<style>
+#pg-extratos .abas{display:flex;gap:8px;flex-wrap:wrap;margin:16px 14px 0}
+#pg-extratos .aba{flex:1 1 auto;font-family:inherit;text-align:center;padding:10px 12px;border-radius:999px;cursor:pointer;background:var(--card);border:1px solid var(--line);font-size:.86rem;font-weight:700;color:var(--fraco);white-space:nowrap}
+#pg-extratos .aba:hover{color:var(--ink)}
+#pg-extratos .aba[aria-current="true"]{background:var(--marca);border-color:rgb(var(--ac));color:var(--ink);box-shadow:inset 0 0 0 1px rgb(var(--ac))}
+#pg-extratos .aba .ct{display:inline-block;margin-left:6px;padding:0 7px;border-radius:999px;background:var(--sup);font-size:.7rem;font-weight:800;color:var(--fraco)}
+#pg-extratos .corpo{padding:0 14px}
+#pg-extratos .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:16px 0}
+#pg-extratos h3{font-size:1.02rem;font-weight:800;margin:22px 0 9px}
+#pg-extratos .card>h3:first-child{margin-top:0}
+#pg-extratos .corpo p{margin:8px 0;font-size:.86rem}
+#pg-extratos .mut{color:var(--fraco)}
+#pg-extratos .nota{font-size:.8rem;color:var(--fraco);font-weight:600}
+
+#pg-extratos .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+#pg-extratos .kpi{background:var(--card);border:1px solid var(--line);border-left:4px solid rgb(var(--ac));border-radius:14px;padding:12px 15px}
+#pg-extratos .kpi .k{font-size:.72rem;font-weight:800;color:var(--fraco);text-transform:uppercase;letter-spacing:.04em}
+#pg-extratos .kpi .v{font-size:1.75rem;font-weight:800;color:rgb(var(--ac));line-height:1.2;margin-top:2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+#pg-extratos .kpi .u{font-size:.76rem;font-weight:800;color:var(--fraco)}
+#pg-extratos .kpi .s{margin-top:7px;font-size:.82rem;font-weight:600;color:var(--fraco)}
+
+#pg-extratos .btn{font-family:inherit;font-weight:700;font-size:.86rem;padding:9px 16px;border-radius:999px;cursor:pointer;border:1.5px solid rgb(var(--ac));background:rgb(var(--ac));color:#fff;white-space:nowrap}
+#pg-extratos .btn.ghost{background:transparent;color:var(--fraco);border-color:var(--line)}
+#pg-extratos .btn.ghost:hover{color:var(--ink);border-color:var(--fraco)}
+#pg-extratos .btn.danger{background:transparent;color:var(--erro);border-color:var(--erro)}
+#pg-extratos .btn.sm{padding:5px 11px;font-size:.76rem}
+#pg-extratos .btn[disabled]{opacity:.45;cursor:not-allowed}
+#pg-extratos .periodo{margin:16px 0 12px}
+#pg-extratos .periodo .seg{align-self:flex-end;min-height:38px;align-items:center}
+#pg-extratos input.cpf{width:74px;text-align:center;font-family:inherit;font-weight:800;font-size:.9rem;padding:6px;border:1px solid var(--line);border-radius:9px;background:var(--soft);color:var(--ink)}
+#pg-extratos input.cpf.pend{border-color:var(--alerta);background:var(--marca)}
+#pg-extratos label.btn{display:inline-flex;align-items:center}
+#pg-extratos .row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+#pg-extratos .row.between{justify-content:space-between;align-items:center}
+#pg-extratos .seg{display:inline-flex;gap:6px;flex-wrap:wrap}
+#pg-extratos .seg button{font-family:inherit;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-weight:700;font-size:.82rem;color:var(--fraco);cursor:pointer}
+#pg-extratos .seg button.on{background:rgb(var(--ac));border-color:rgb(var(--ac));color:#fff}
+#pg-extratos .fld{display:flex;flex-direction:column;gap:5px;font-size:.72rem;font-weight:800;color:var(--fraco);text-transform:uppercase;letter-spacing:.04em}
+#pg-extratos .fld input,#pg-extratos .fld select{font-family:inherit;background:var(--soft);border:1px solid var(--line);border-radius:10px;color:var(--ink);font-size:.86rem;font-weight:700;padding:8px 11px;text-transform:none;letter-spacing:0;max-width:250px;min-height:38px}
+#pg-extratos .fld .fixo{display:flex;align-items:center;font-size:.84rem;font-weight:700;color:var(--ink);background:var(--marca);border:1px solid rgb(var(--ac));border-radius:10px;padding:7px 11px;text-transform:none;letter-spacing:0;max-width:360px;min-height:38px;line-height:1.3}
+body.escuro #pg-extratos input[type=date]{color-scheme:dark}
+#pg-extratos .chk{display:flex;align-items:center;gap:7px;font-size:.83rem;font-weight:700;cursor:pointer;min-height:38px}
+#pg-extratos input[type=checkbox]{width:17px;height:17px;accent-color:rgb(var(--ac));cursor:pointer}
+
+#pg-extratos .tw{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:4px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+#pg-extratos .tw::-webkit-scrollbar{height:8px}
+#pg-extratos .tw::-webkit-scrollbar-thumb{background:var(--line);border-radius:999px}
+#pg-extratos table{border-collapse:collapse;width:100%;font-size:.84rem;font-variant-numeric:tabular-nums}
+#pg-extratos th{text-align:left;font-size:.68rem;font-weight:800;color:var(--fraco);padding:9px 8px;border-bottom:2px solid var(--line);white-space:nowrap;text-transform:uppercase;letter-spacing:.03em}
+#pg-extratos td{padding:8px 8px;border-bottom:1px solid var(--soft);vertical-align:middle;white-space:nowrap}
+#pg-extratos tbody tr:last-child td{border-bottom:0}
+#pg-extratos th.n,#pg-extratos td.n{text-align:right}
+#pg-extratos td.b,#pg-extratos .b{font-weight:800}
+#pg-extratos .mono{font-family:var(--mono);letter-spacing:.2px;font-size:.76rem}
+#pg-extratos .sub{font-size:.72rem;color:var(--fraco);font-weight:600}
+#pg-extratos .sub .p{color:var(--alerta);font-weight:800}
+#pg-extratos tr.click{cursor:pointer}
+#pg-extratos tr.click:hover td{background:var(--soft)}
+#pg-extratos tr.open td{background:var(--marca)}
+#pg-extratos tr.det>td{background:var(--soft);padding:12px;white-space:normal}
+#pg-extratos tr.canc td{color:var(--fraco)}
+#pg-extratos tfoot td{font-weight:800;border-top:2px solid rgb(var(--ac));border-bottom:0}
+#pg-extratos td.wrapc{white-space:normal;min-width:150px;max-width:460px}
+#pg-extratos td .p{color:var(--alerta);font-weight:800}
+#pg-extratos th.acao,#pg-extratos td.acao{position:sticky;right:0;background:var(--card);text-align:right;width:1%;padding-left:12px;box-shadow:-10px 0 10px -10px rgba(20,24,27,.18)}
+#pg-extratos tr.canc td.acao .btn{color:#fff}
+#pg-extratos tr.canc td.acao .btn.ghost{color:var(--fraco)}
+#pg-extratos .bd{display:inline-block;font-size:.68rem;font-weight:800;padding:2px 8px;border-radius:999px;margin:1px 3px 1px 0;white-space:nowrap}
+#pg-extratos td.wrapc .bd{white-space:normal}
+#pg-extratos .bd.w{background:var(--marca);color:var(--alerta)}
+#pg-extratos .bd.i{background:var(--sup);color:var(--fraco)}
+#pg-extratos .bd.c{background:var(--erroFundo);color:var(--erro)}
+#pg-extratos .bd.ok{color:var(--verde);box-shadow:inset 0 0 0 1px var(--verde)}
+#pg-extratos .empty{padding:26px 16px;text-align:center;color:var(--fraco);font-size:.87rem;font-weight:600}
+#pg-extratos .carregando{display:flex;align-items:center;gap:10px;color:var(--fraco);font-size:.86rem;font-weight:600;padding:26px 16px;justify-content:center}
+#pg-extratos .spin{width:22px;height:22px;border:3px solid var(--soft);border-top-color:rgb(var(--ac));border-radius:50%;animation:gira .8s linear infinite;flex:none}
+#pg-extratos .aviso{font-size:.82rem;font-weight:700;padding:9px 12px;border-radius:10px;background:var(--marca);color:var(--alerta);margin:10px 0}
+#pg-extratos .aviso.erro{background:var(--erroFundo);color:var(--erro)}
+#pg-extratos .aviso.ok{background:transparent;color:var(--verde);box-shadow:inset 0 0 0 1.5px var(--verde)}
+#pg-extratos input.ed{font-family:inherit;font-size:.84rem;font-weight:700;padding:6px 7px;border:1px solid var(--line);border-radius:8px;background:var(--soft);color:var(--ink);width:100%;min-width:0}
+#pg-extratos input.ed.loc{width:86px;font-family:var(--mono);letter-spacing:.3px;text-transform:uppercase}
+#pg-extratos input.ed.cp{width:146px;font-family:var(--mono);font-size:.78rem;text-transform:uppercase}
+#pg-extratos input.ed.ped{width:96px;font-family:var(--mono);font-size:.78rem}
+#pg-extratos input.ed.num{width:104px;text-align:right}
+#pg-extratos input.ed.cpfs{width:56px;text-align:center}
+#pg-extratos table.edit td{padding:5px}
+#pg-extratos tr.err td{background:var(--erroFundo)}
+#pg-extratos tr.err input.ed{border-color:var(--erro)}
+
+#pg-extratos .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 14px}
+#pg-extratos textarea{width:100%;min-height:150px;resize:vertical;font-family:var(--mono);font-size:.8rem;line-height:1.6;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft);color:var(--ink)}
+#pg-extratos .drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:20px;text-align:center;font-weight:700;font-size:.88rem;color:var(--fraco);cursor:pointer}
+#pg-extratos .drop:hover,#pg-extratos .drop.over{border-color:rgb(var(--ac));color:var(--ink)}
+#pg-extratos .drop input{display:none}
+#pg-extratos .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:9px;margin:10px 0}
+#pg-extratos .stats div{background:var(--soft);border-radius:12px;padding:9px 13px}
+#pg-extratos .stats b{display:block;font-size:1.3rem;font-weight:800;color:rgb(var(--ac));line-height:1.25}
+#pg-extratos .stats span{font-size:.74rem;color:var(--fraco);font-weight:700}
+#pg-extratos ul.plain{margin:6px 0 0;padding-left:18px;color:var(--fraco);font-size:.84rem}
+
+#pg-extratos .cmp{display:inline-grid;gap:1px;text-align:right}
+#pg-extratos .cmp.l{text-align:left}
+#pg-extratos .cmp span{display:block;white-space:nowrap}
+#pg-extratos .cmp i{font-style:normal;font-size:.62rem;color:var(--fraco);font-weight:800;text-transform:uppercase;margin-right:6px;letter-spacing:.04em;font-family:'Nunito',sans-serif}
+#pg-extratos .cmp .p{color:var(--alerta);font-weight:800}
+#pg-extratos .views{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin:18px 0 12px}
+#pg-extratos .vcard{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+#pg-extratos .vcard.on{background:var(--marca);border-color:rgb(var(--ac));box-shadow:inset 0 0 0 1px rgb(var(--ac))}
+#pg-extratos .vcard .vsel{flex:1;font-family:inherit;background:transparent;border:0;padding:11px 15px 9px;text-align:left;cursor:pointer;color:var(--ink)}
+#pg-extratos .vcard .vsel b{display:block;font-size:1.6rem;font-weight:800;color:rgb(var(--ac));font-variant-numeric:tabular-nums;line-height:1.2}
+#pg-extratos .vcard .vsel span{font-size:.8rem;font-weight:800;color:var(--fraco)}
+#pg-extratos .vcard .btn{margin:0 12px 12px;align-self:flex-start}
+#pg-extratos .vcard .btn.ghost{background:var(--card)}
+#pg-extratos .vcard .vnota{margin:-6px 14px 10px;font-size:.74rem;font-weight:800;color:var(--alerta)}
+
+#pg-extratos .rodape{position:sticky;bottom:0;z-index:15;margin:16px 14px 0;border-radius:16px 16px 0 0;background:var(--sup);border:1px solid var(--line);padding:10px 18px calc(10px + env(safe-area-inset-bottom));display:flex;flex-wrap:wrap;align-items:center;gap:4px 26px}
+#pg-extratos .rodape .lb{flex-basis:100%;font-size:.7rem;font-weight:800;color:var(--fraco);text-transform:uppercase;letter-spacing:.04em}
+#pg-extratos .rodape .it{font-size:1.12rem;font-weight:800;color:rgb(var(--ac));line-height:1.2;font-variant-numeric:tabular-nums;white-space:nowrap}
+#pg-extratos .rodape .it span{display:block;font-size:.68rem;color:var(--fraco);font-weight:700}
+#pg-extratos .ex-recado{position:fixed;left:50%;transform:translateX(-50%);bottom:96px;z-index:40;max-width:min(520px,88vw);background:var(--ink);color:var(--bg);padding:11px 16px;border-radius:14px;font-size:.85rem;font-weight:600;box-shadow:0 6px 22px rgba(20,24,27,.22)}
+#pg-extratos .ex-recado[hidden]{display:none}
+body.escuro #pg-extratos .ex-recado{background:var(--sup);color:var(--ink);box-shadow:0 6px 22px rgba(0,0,0,.5)}
+
+@media(max-width:1450px){
+  #pg-extratos th{padding:8px 6px}
+  #pg-extratos td{padding:7px 6px}
+  #pg-extratos td.wrapc{min-width:120px}
+}
+@media(min-width:1700px){
+  #pg-extratos table{font-size:.9rem}
+  #pg-extratos th{font-size:.72rem;padding:10px 12px}
+  #pg-extratos td{padding:9px 12px}
+  #pg-extratos .mono{font-size:.82rem}
+}
+@media(max-width:759px){
+  #pg-extratos .abas{margin:14px 10px 0;gap:6px}
+  #pg-extratos .aba{font-size:.78rem;padding:9px 8px}
+  #pg-extratos .corpo{padding:0 10px}
+  #pg-extratos .card{padding:13px;margin:14px 0}
+  #pg-extratos .rodape{margin:14px 10px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 22px}
+  #pg-extratos .rodape .lb{grid-column:1/-1}
+  #pg-extratos .kpi .v{font-size:1.5rem}
+}
+</style>
+
+  <div class="cabeca">
+    <div>
+      <h2>Fechamento do grupo de extratos</h2>
+      <p>Cada dia subido do grupo do WhatsApp fica salvo e soma na semana e no mês; os cancelamentos vêm da planilha de vendas.</p>
+    </div>
+    <div class="selo" id="exSelo">planilha…</div>
+  </div>
+
+  <div class="abas" id="exAbas"></div>
+  <div class="corpo" id="exMain"></div>
+  <div class="rodape" id="exRodape"></div>
+  <div class="ex-recado" id="exRecado" hidden></div>
+</section>
+<script>
+(function(){
+'use strict';
+/* =====================================================================
+   MP GRUPO DE EXTRATOS
+   - Extratos do grupo: lidos do texto exportado do WhatsApp (linhas de conta
+     e senha são descartadas). Cada dia subido fica salvo no servidor, na
+     planilha de dados da ferramenta, e pode ser editado ou removido.
+   - Planilha de vendas: lida online pelo fxLerPlanilha() do Código.gs,
+     só as colunas A, B, C, E, F, G, L, M e U. Nada é gravado nela.
+   - Cancelamento: vale o STATUS da planilha. A cancelada sai do fechamento
+     (milhas e valor não contam) e entra a cobrança por CPF usado.
+   ===================================================================== */
+const root = document.getElementById('pg-extratos');
+const $ = s => root.querySelector(s);
+const ONLINE = typeof google !== 'undefined' && !!(google.script && google.script.run);
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const two = n => String(n).padStart(2, '0');
+const fmtMi = n => Math.round(n).toLocaleString('pt-BR');
+const fmtR = n => 'R$ ' + (Math.round(n * 100) / 100).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const fmtD = iso => { const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+// data curta para tabelas (dd/mm/aa) e telefone sem o +55, para as colunas caberem
+const fmtDc = iso => { const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0].slice(2); };
+const quem = w => esc(String(w || '').replace(/^\+55\s*/, ''));
+const fmtDs = iso => { const p = iso.split('-'); return p[2] + '/' + p[1]; };
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const DIAS = ['dom','seg','ter','qua','qui','sex','sáb'];
+function norm(s) { return String(s).toLowerCase().normalize('NFD').replace(/\p{M}/gu, ''); }
+
+/* ---------------- dados em memória ---------------- */
+// DB espelha o que o servidor mandou para o mês carregado; SALVOS é o resumo de todos os dias salvos.
+const CFG_PADRAO = {rate: 28, cpfFee: 125, dfmt: 'auto'};
+let DB = {cfg: Object.assign({}, CFG_PADRAO), em: [], cx: [], cpf: {}, res: {}};   // res: pendências da conciliação já resolvidas
+let SALVOS = [];                                        // {d, n, mi, tot, up}
+const CAR = {estado: 'abrindo', erro: '', de: '', ate: '', seq: 0, dados: '', nome: '', atualizando: false};   // faixa carregada
+
+/* ---------------- datas e períodos ---------------- */
+function toUTC(iso) { const p = iso.split('-').map(Number); return new Date(Date.UTC(p[0], p[1] - 1, p[2])); }
+function addDays(iso, n) { const t = toUTC(iso); t.setUTCDate(t.getUTCDate() + n); return t.toISOString().slice(0, 10); }
+function monday(iso) { const t = toUTC(iso); return addDays(iso, -((t.getUTCDay() + 6) % 7)); }
+function todayISO() { const t = new Date(); return t.getFullYear() + '-' + two(t.getMonth() + 1) + '-' + two(t.getDate()); }
+function pkey(iso, g) { return g === 'dia' ? iso : g === 'sem' ? monday(iso) : iso.slice(0, 7); }
+function prange(k, g) {
+  if (g === 'dia') return [k, k];
+  if (g === 'sem') return [k, addDays(k, 6)];
+  const p = k.split('-').map(Number);
+  return [k + '-01', k + '-' + two(new Date(Date.UTC(p[0], p[1], 0)).getUTCDate())];
+}
+function plabel(k, g) {
+  if (g === 'dia') return fmtD(k) + ' · ' + DIAS[toUTC(k).getUTCDay()];
+  if (g === 'sem') return fmtDs(k) + ' a ' + fmtD(addDays(k, 6));
+  const p = k.split('-').map(Number);
+  return MESES[p[1] - 1] + '/' + p[0];
+}
+
+/* ---------------- leitura do texto do WhatsApp ---------------- */
+const RE_A = /^\[(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4}),?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?(?:\s*([AP])\.?\s?M\.?)?\]\s?(.*)$/i;
+const RE_B = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4}),?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?(?:\s*([AP])\.?\s?M\.?)?\s+-\s(.*)$/i;
+// marcas invisíveis de direção de texto que o WhatsApp põe na exportação
+const RE_INVISIVEL = new RegExp('[' + [0x200e, 0x200f, 0x202a, 0x202b, 0x202c, 0x202d, 0x202e, 0xfeff].map(c => String.fromCharCode(c)).join('') + ']', 'g');
+
+function parseChat(text, pref) {
+  text = text.replace(/\r/g, '').replace(RE_INVISIVEL, '');
+  const raw = [];
+  for (const line of text.split('\n')) {
+    let m = RE_A.exec(line), form = 'A';
+    if (!m) { m = RE_B.exec(line); form = 'B'; }
+    if (m) {
+      raw.push({a: +m[1], b: +m[2], y: +m[3], H: +m[4], M: +m[5], S: +(m[6] || 0), ap: (m[7] || '').toUpperCase(), rest: m[8], form});
+    } else if (raw.length) {
+      raw[raw.length - 1].rest += '\n' + line;
+    }
+  }
+  if (!raw.length) return {msgs: [], mdy: false, why: ''};
+
+  // dia/mês ou mês/dia? evidência direta primeiro; depois a data mais próxima de hoje
+  let mdy, why;
+  if (pref === 'dmy' || pref === 'mdy') { mdy = pref === 'mdy'; why = 'definido nas configurações'; }
+  else if (raw.some(r => r.a > 12)) { mdy = false; why = 'detectado'; }
+  else if (raw.some(r => r.b > 12)) { mdy = true; why = 'detectado'; }
+  else {
+    const last = raw[raw.length - 1], lim = addDays(todayISO(), 1);
+    const dD = mkDate(last, false).d, dM = mkDate(last, true).d;
+    const okD = dD <= lim, okM = dM <= lim;
+    if (okD !== okM) mdy = okM;
+    else if (dD !== dM) mdy = okD ? dM > dD : dM < dD;
+    else mdy = !!last.ap;
+    why = 'deduzido pela data mais próxima de hoje';
+  }
+
+  const msgs = raw.map(r => {
+    const dt = mkDate(r, mdy);
+    const rest = r.rest, nl = rest.indexOf('\n'), first = nl < 0 ? rest : rest.slice(0, nl), tail = nl < 0 ? '' : rest.slice(nl);
+    let sys = false, who = '', body = '';
+    if (r.form === 'A' && first.startsWith('- ')) sys = true;
+    else {
+      const i = first.indexOf(': ');
+      if (i > 0 && i <= 60) { who = first.slice(0, i).trim(); body = first.slice(i + 2) + tail; }
+      else if (first.endsWith(':') && first.length <= 60) { who = first.slice(0, -1).trim(); body = tail; }
+      else sys = true;
+    }
+    return {d: dt.d, h: dt.h, sys, who, body};
+  });
+  return {msgs, mdy, why};
+}
+function mkDate(r, mdy) {
+  const mo = mdy ? r.a : r.b, da = mdy ? r.b : r.a, y = r.y < 100 ? 2000 + r.y : r.y;
+  let H = r.H; if (r.ap) H = H % 12 + (r.ap === 'P' ? 12 : 0);
+  return {d: y + '-' + two(mo) + '-' + two(da), h: two(H) + ':' + two(r.M) + ':' + two(r.S)};
+}
+
+/* ---------------- extração dos campos do extrato ---------------- */
+function money(s) {
+  s = s.replace(/[^\d.,]/g, '').replace(/[.,]+$/, '');
+  const ld = s.lastIndexOf('.'), lc = s.lastIndexOf(',');
+  if (lc > -1 && ld > -1) s = lc > ld ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, '');
+  else if (lc > -1) s = s.replace(',', '.');
+  else if (ld > -1 && (s.length - ld - 1 === 3 || s.split('.').length > 2)) s = s.replace(/\./g, '');
+  const v = parseFloat(s);
+  return isFinite(v) ? Math.round(v * 100) / 100 : null;
+}
+const RE_LOC = /\b(?:localizador|loc)[ \t]*:[ \t]*([A-Z0-9]{6})\b/i;
+const RE_LOC_G = /\b(?:localizador|loc)[ \t]*:[ \t]*([A-Z0-9]{6})\b/gi;
+const RE_RATE = [
+  /x[ \t]*R\$[ \t]*(\d[\d.,]*)[ \t]*\/[ \t]*milheiro/i,
+  /(?:milhas|pontos)[ \t]*:[ \t]*[\d.,]+[ \t]*[*x][ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/i,
+  /milheiro[ \t]+a[ \t]+R\$[ \t]*(\d[\d.,]*)/i,
+  /custo[ \t]+do[ \t]+milheiro[ \t]*:[ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/i,
+  /milheiro[ \t]*:[ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/i,
+  /cpfs?[ \t]+R\$[ \t]*(\d[\d.,]*)/i
+];
+const RE_CPF = [
+  /c(?:pf|fp)s?(?:[ \t]+utilizados)?[ \t]*:[ \t]*(\d{1,2})\b/i,
+  /(?:^|[^\d.,])(\d{1,2})[ \t]*cpfs?\b/i,
+  /\bcpfs?[ \t]*(\d{1,2})\b/i
+];
+function fields(b) {
+  const g = re => { const m = re.exec(b); return m ? m[1] : null; };
+  const o = {};
+  const loc = g(RE_LOC); o.loc = loc ? loc.toUpperCase() : '';
+  const cps = [...new Set(b.match(/\bLA\d{7}[A-Z]{4}\b/g) || [])];
+  o.cp = cps[0] || (g(/\bcompra[ \t]*:[ \t]*([A-Z0-9]{8,16})\b/i) || '').toUpperCase();
+  o.ped = g(/pedido[ \t]*:?\s*(\d{6,10})\b/i) || '';
+  const mi = g(/^[^\w\n]*(?:milhas|pontos)[ \t]*:[ \t]*(\d[\d.,]*)/im);
+  o.mi = mi ? parseInt(mi.replace(/[.,]/g, ''), 10) : null;
+  const tx = g(/^[^\w\n]*taxas?[ \t]*:[ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/im); o.tx = tx ? money(tx) : null;
+  const tot = g(/^[^\w\n]*total(?:[ \t]+a[ \t]+pagar)?[ \t]*:[ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/im); o.tot = tot ? money(tot) : null;
+  const bag = g(/bagagem[ \t]*:[ \t]*(?:R\$[ \t]*)?(\d[\d.,]*)/i); o.bag = bag ? money(bag) : 0;
+  o.rt = null; for (const re of RE_RATE) { const v = g(re); if (v) { o.rt = money(v); break; } }
+  o.cpf = null; for (const re of RE_CPF) { const v = g(re); if (v) { o.cpf = +v; break; } }
+  const px = /(\d{1,2})[ \t]*pax\b/i.exec(b) || /passageiros[ \t]*:[ \t]*(\d{1,2})\b/i.exec(b);
+  o.pax = px ? +px[1] : null;
+  return o;
+}
+// mensagem com mais de um localizador: separa em blocos, um por emissão
+function segments(b) {
+  const pos = [], seen = new Set(); let m; RE_LOC_G.lastIndex = 0;
+  while ((m = RE_LOC_G.exec(b))) { const L = m[1].toUpperCase(); if (!seen.has(L)) { seen.add(L); pos.push(m.index); } }
+  if (pos.length < 2) return [b];
+  const st = pos.map((p, i) => {
+    if (i === 0) return 0;
+    const between = b.slice(pos[i - 1], p), t = between.search(/^[^\w\n]*total/im);
+    if (t > -1) { const q = between.slice(t).search(/^[^\w\n]*pedido/im); if (q > -1) return pos[i - 1] + t + q; }
+    return p;
+  });
+  return st.map((s, i) => b.slice(s, i + 1 < st.length ? st[i + 1] : b.length));
+}
+function redact(s) {
+  return s.split('\n').filter(l => !/conta|senha|login|https?:\/\//i.test(l)).join(' ').replace(/\s+/g, ' ').trim().slice(0, 110);
+}
+function extract(msgs) {
+  const out = {em: [], canc: [], skipped: [], nmsg: 0, apag: 0};
+  for (const m of msgs) {
+    if (m.sys) continue;
+    out.nmsg++;
+    const b = m.body;
+    if (/mensagem apagada|message was deleted/i.test(b) && b.length < 60) { out.apag++; continue; }
+    // o rodapé padrão do extrato diz "a emissao sera cancelada": isso não é aviso de cancelamento
+    if (/cancelad[oa]s?\b|cancelamento/i.test(b.replace(/ser[aá]\s+cancelad[oa]/gi, ''))) {
+      const f = fields(b);
+      if (f.loc || f.cp || f.ped) out.canc.push(Object.assign(f, {d: m.d, h: m.h, who: m.who}));
+      else out.skipped.push({d: m.d, h: m.h, who: m.who, txt: redact(b)});
+      continue;
+    }
+    const segs = segments(b); let got = 0;
+    for (const s of segs) {
+      const f = fields(s);
+      if (f.mi != null && (f.loc || f.cp)) { out.em.push(Object.assign(f, {d: m.d, h: m.h, who: m.who, nl: segs.length})); got++; }
+    }
+    if (!got) {
+      const f = fields(b);
+      if (f.loc || f.cp || f.mi != null) out.skipped.push({d: m.d, h: m.h, who: m.who, txt: redact(b)});
+    }
+  }
+  return out;
+}
+
+/* ---------------- conversa com o servidor ---------------- */
+// Publicada como app da web, a ferramenta fala com o Código.gs. Aberta como arquivo
+// solto (teste), as mesmas chamadas são atendidas por um armazenamento neste navegador.
+const LS_KEY = 'mp-grupo-extratos.dias.v3';
+const LOCAL = (() => {
+  const ler = () => { try { const o = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); if (o && o.dias) { o.res = o.res || {}; return o; } } catch (e) {} return {dias: {}, cpf: {}, cfg: {}, res: {}}; };
+  const gravar = o => localStorage.setItem(LS_KEY, JSON.stringify(o));
+  const ok = o => Promise.resolve(Object.assign({ok: true}, o));
+  return {
+    fxAbrir(de, ate) {
+      const o = ler(), cfg = Object.assign({}, CFG_PADRAO, o.cfg), ds = Object.keys(o.dias).sort().reverse();
+      const dias = ds.map(d => {
+        let mi = 0, tot = 0;
+        for (const e of o.dias[d].em) { mi += e[5] || 0; tot += e[7] != null ? e[7] : (e[5] || 0) * (e[9] || cfg.rate) / 1000 + (e[6] || 0) + (e[8] || 0); }
+        return [d, o.dias[d].em.length, mi, Math.round(tot * 100) / 100, o.dias[d].up || ''];
+      });
+      if (!de || !ate) { const m = prange(pkey(ds[0] || todayISO(), 'mes'), 'mes'); de = m[0]; ate = m[1]; }
+      const em = [], cx = [];
+      for (const d of ds) if (d >= de && d <= ate) {
+        for (const e of o.dias[d].em) em.push([d].concat(e));
+        for (const c of o.dias[d].cx || []) cx.push([d].concat(c));
+      }
+      return ok({de, ate, dias, em, cx, cpf: o.cpf, cfg, res: o.res, dados: '', pl: null});
+    },
+    fxLerDia(d) { const x = ler().dias[d] || {em: [], cx: []}; return ok({d, em: x.em.map(e => [d].concat(e)), cx: (x.cx || []).map(c => [d].concat(c))}); },
+    fxSalvarDias(json) {
+      const o = ler(), l = JSON.parse(json);
+      for (const x of l) { const ant = o.dias[x.d]; o.dias[x.d] = {em: x.em, cx: x.cx || (ant ? ant.cx : []), up: new Date().toISOString()}; }
+      gravar(o); return ok({dias: l.length});
+    },
+    fxRemoverDia(d) { const o = ler(); delete o.dias[d]; gravar(o); return ok({}); },
+    fxResolver(json) { const o = ler(); for (const x of JSON.parse(json)) { if (x.s) o.res[x.k] = x.s; else delete o.res[x.k]; } gravar(o); return ok({}); },
+    fxSalvarCpf(k, n) { const o = ler(); if (n === '' || n == null) delete o.cpf[k]; else o.cpf[k] = +n; gravar(o); return ok({}); },
+    fxSalvarCfg(json) { const o = ler(); o.cfg = JSON.parse(json); gravar(o); return ok({cfg: o.cfg}); }
+  };
+})();
+// Toda chamada devolve uma Promise com a resposta já convertida; erro do servidor vira rejeição.
+function chamar(nome, ...args) {
+  if (!ONLINE) { try { return LOCAL[nome](...args); } catch (e) { return Promise.reject(e); } }
+  return new Promise((certo, falha) => {
+    google.script.run
+      .withSuccessHandler(r => {
+        let o = null; try { o = JSON.parse(r || 'null'); } catch (e) {}
+        if (o && o.ok) certo(o); else falha(new Error((o && o.erro) || 'resposta inesperada do servidor'));
+      })
+      .withFailureHandler(e => falha(new Error(String(e && e.message ? e.message : e))))[nome](...args);
+  });
+}
+
+/* ---------------- planilha de vendas ---------------- */
+// PL.rows: {i, d, loc, cp, mi, tx, tot, cia, st, cli, resp} — só as dez colunas lidas da planilha
+const PL = {rows: [], clientes: [], de: '', ate: '', abas: [], estado: ONLINE ? 'vazio' : 'offline', erro: '', lidoEm: null};
+const isCanc = s => /cancel/i.test(s.st);
+const SH = () => PL.rows;
+// a planilha carregada cobre o período escolhido?
+function plPronta() {
+  if (PL.estado === 'colada') return true;
+  return PL.estado === 'ok' && !!UI.p.de && UI.p.de >= PL.de && UI.p.ate <= PL.ate;
+}
+
+/* ---------------- abrir: dias salvos + planilha, numa chamada só ---------------- */
+// Sempre carrega meses inteiros, para trocar entre dia, semana e mês sem ir ao servidor de novo.
+// auto=true: o servidor escolhe o mês do último dia salvo.
+// quieto=true: atualiza por trás, sem trocar a tela pelo aviso de "abrindo" (usado ao marcar "Resolvido").
+// marcas de "resolvido" ainda a caminho do servidor: valem por cima do que a leitura trouxer
+const resOver = {};
+function abrir(auto, quieto, depois) {
+  const seq = ++CAR.seq; quieto = !!quieto && CAR.estado === 'ok';
+  const de = auto || !UI.p.de ? '' : prange(pkey(UI.p.de, 'mes'), 'mes')[0];
+  const ate = auto || !UI.p.ate ? '' : prange(pkey(UI.p.ate, 'mes'), 'mes')[1];
+  CAR.erro = '';
+  if (quieto) { CAR.atualizando = true; selo(); } else { CAR.estado = 'abrindo'; render(); }
+  chamar('fxAbrir', de, ate).then(r => { if (seq !== CAR.seq) return; CAR.atualizando = false; aplicar(r, auto || !UI.p.de); if (depois) depois(); },
+    err => {
+      if (seq !== CAR.seq) return; CAR.atualizando = false;
+      if (quieto) { render(); recado('Não consegui atualizar a planilha: ' + err.message); }
+      else { CAR.estado = 'erro'; CAR.erro = err.message; render(); }
+    });
+}
+function aplicar(r, auto) {
+  CAR.estado = 'ok'; CAR.de = r.de; CAR.ate = r.ate; CAR.dados = r.dados || ''; CAR.nome = r.nome || '';
+  DB.cfg = Object.assign({}, CFG_PADRAO, r.cfg || {}); DB.cpf = r.cpf || {}; DB.res = r.res || {};
+  for (const k in resOver) { if (resOver[k]) DB.res[k] = resOver[k]; else delete DB.res[k]; }
+  DB.em = (r.em || []).map(l => ({d: l[0], h: l[1], who: l[2], loc: l[3], cp: l[4], ped: l[5], mi: l[6] || 0, tx: l[7], tot: l[8], bag: l[9] || 0, rt: l[10], cpf: l[11], pax: l[12], ed: l[13] ? 1 : 0}))
+    .sort((a, b) => (b.d + b.h).localeCompare(a.d + a.h));
+  DB.em.forEach((e, i) => { e.k = 'e' + i; });
+  DB.cx = (r.cx || []).map(l => ({d: l[0], h: l[1], who: l[2], loc: l[3], cp: l[4], ped: l[5]})).sort((a, b) => (b.d + b.h).localeCompare(a.d + a.h));
+  SALVOS = (r.dias || []).map(l => ({d: l[0], n: l[1], mi: l[2], tot: l[3], up: l[4]}));
+  if (r.pl && r.pl.linhas) {
+    const D = r.pl.dic || [];
+    PL.rows = r.pl.linhas.map((l, i) => ({i, d: l[0], loc: l[1], cp: l[2], mi: l[3], tx: l[4], tot: l[5], cia: D[l[6]] || '', st: D[l[7]] || '', cli: D[l[8]] || '', resp: D[l[9]] || ''}));
+    PL.de = r.pl.de; PL.ate = r.pl.ate; PL.abas = r.pl.abas || []; PL.clientes = r.pl.clientes || []; PL.estado = 'ok'; PL.erro = ''; PL.lidoEm = new Date();
+  } else if (r.pl && r.pl.erro) { PL.rows = []; PL.estado = 'erro'; PL.erro = r.pl.erro; }
+  if (auto) { UI.p = {de: r.de, ate: r.ate}; if (!SALVOS.length) UI.tab = 'dias'; }
+  render();
+}
+function mudarPeriodo(de, ate) {
+  UI.p = {de, ate}; UI.open = null; UI.c.view = '';
+  if (CAR.estado === 'ok' && de >= CAR.de && ate <= CAR.ate) render(); else abrir(false);
+}
+// atalhos de período, contados a partir do último dia salvo
+function faixaAtalho(k) {
+  const ref = SALVOS.length ? SALVOS[0].d : todayISO();
+  return k === 'dia' ? [ref, ref] : prange(pkey(ref, k), k);
+}
+function selo() {
+  const hora = PL.lidoEm ? two(PL.lidoEm.getHours()) + ':' + two(PL.lidoEm.getMinutes()) : '';
+  $('#exSelo').textContent =
+    CAR.estado === 'abrindo' ? 'abrindo…' :
+    CAR.atualizando ? 'atualizando a planilha…' :
+    CAR.estado === 'erro' ? 'erro ao abrir os dados' :
+    (SALVOS.length === 1 ? '1 dia salvo' : SALVOS.length + ' dias salvos') + ' · ' +
+      (PL.estado === 'ok' ? 'planilha lida às ' + hora : PL.estado === 'erro' ? 'planilha com erro' : PL.estado === 'colada' ? 'planilha colada (teste)' : 'sem planilha (arquivo de teste)');
+}
+
+/* modo de teste, fora do Apps Script: linhas coladas da planilha */
+const SHEET_COLS = {d: 0, loc: 1, cp: 2, mi: 4, tx: 5, tot: 6, cia: 11, st: 12, resp: 15, cli: 20};
+const SHEET_HEAD = {d: /^DATA$/, loc: /^LOCALIZADOR$/, cp: /^COMPRA$/, mi: /^MILHAS$/, tx: /^TAXAS?$/, tot: /^TOTAL/, cia: /^COMPANHIA$/, st: /^STATUS$/, resp: /^RESPONSAVEL$/, cli: /^CLIENTE$/};
+function parseTSV(text) {
+  const rows = [], n = text.length; let row = [], cell = '', i = 0;
+  while (i < n) {
+    const c = text[i];
+    if (c === '"' && cell === '') {            // célula entre aspas: pode ter tab ou quebra de linha dentro
+      let j = i + 1, buf = '', closed = false;
+      while (j < n) {
+        if (text[j] === '"') { if (text[j + 1] === '"') { buf += '"'; j += 2; continue; } closed = true; break; }
+        buf += text[j]; j++;
+      }
+      if (closed && (j + 1 >= n || text[j + 1] === '\t' || text[j + 1] === '\n')) { cell = buf; i = j + 1; continue; }
+    }
+    if (c === '\t') { row.push(cell); cell = ''; i++; continue; }
+    if (c === '\n') { row.push(cell); rows.push(row); row = []; cell = ''; i++; continue; }
+    cell += c; i++;
+  }
+  if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
+  return rows;
+}
+function sheetDate(s) {
+  s = (s || '').trim(); let m;
+  if ((m = /^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})/.exec(s))) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + two(m[2]) + '-' + two(m[1]);
+  if ((m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s))) return m[1] + '-' + m[2] + '-' + m[3];
+  return '';
+}
+function sheetMi(s) {
+  s = (s || '').trim(); if (!s) return null;
+  if (s.includes(',')) { const v = money(s); return v == null ? null : Math.round(v); }
+  const d = s.replace(/\D/g, ''); return d ? parseInt(d, 10) : null;
+}
+function parseSheet(text) {
+  const rows = parseTSV(text.replace(/\r/g, ''));
+  const map = Object.assign({}, SHEET_COLS); let start = 0, byHeader = false;
+  for (let i = 0; i < Math.min(rows.length, 5); i++) {
+    const h = rows[i].map(c => norm(c).toUpperCase().trim());
+    if (h.includes('LOCALIZADOR') && h.includes('MILHAS')) {
+      for (const k in SHEET_HEAD) { const j = h.findIndex(c => SHEET_HEAD[k].test(c)); if (j > -1) map[k] = j; }
+      start = i + 1; byHeader = true; break;
+    }
+  }
+  const out = []; let ign = 0;
+  for (let i = start; i < rows.length; i++) {
+    const r = rows[i], g = k => (r[map[k]] || '').trim();
+    if (!r.some(c => c.trim())) continue;
+    const d = sheetDate(g('d')), loc = g('loc').toUpperCase(), cp = g('cp').toUpperCase();
+    if (!d || (!loc && !cp)) { ign++; continue; }
+    const tx = g('tx'), tot = g('tot');
+    out.push({i: out.length, d, loc, cp, mi: sheetMi(g('mi')), tx: tx ? money(tx) : null, tot: tot ? money(tot) : null, cia: g('cia'), st: g('st'), cli: g('cli'), resp: g('resp')});
+  }
+  return {rows: out, ign, byHeader};
+}
+
+/* ---------------- conciliação grupo × planilha ---------------- */
+// chave: localizador; se o extrato não tem localizador, o código de compra
+let _conc = null;
+function conciliar() {
+  if (_conc) return _conc;
+  const sh = SH(), byLoc = new Map(), byCp = new Map();
+  const put = (m, k, v) => { if (!m.has(k)) m.set(k, []); m.get(k).push(v); };
+  for (const s of sh) { if (s.loc) put(byLoc, s.loc, s); if (s.cp) put(byCp, s.cp, s); }
+  const used = new Set(), pairs = [], soG = [];
+  for (const e of DB.em) {
+    let c = e.loc ? byLoc.get(e.loc) : null, via = 'loc';
+    if (!c && e.cp) { c = byCp.get(e.cp); via = 'cp'; }
+    if (!c) { soG.push(e); continue; }
+    // linha principal: a que tem milhas (as outras são cobranças avulsas do mesmo localizador)
+    const s = c.find(x => x.mi != null && x.d === e.d) || c.find(x => x.mi != null) || c[0];
+    c.forEach(x => used.add(x.i));
+    pairs.push({e, s, extra: c.filter(x => x !== s), via, dif: diffs(e, s)});
+  }
+  // clientes do grupo: os nomes da coluna CLIENTE das linhas que casaram com extratos
+  const ct = new Map();
+  for (const p of pairs) if (p.s.cli) ct.set(p.s.cli, (ct.get(p.s.cli) || 0) + 1);
+  const min = Math.max(1, Math.ceil(pairs.length * 0.02));
+  const clis = new Set([...ct].filter(x => x[1] >= min).map(x => x[0]));
+  const byKey = new Map(pairs.map(p => [p.e.k, p]));
+  // canceladas: extratos cuja linha na planilha está com STATUS de cancelada
+  const canc = new Set(pairs.filter(p => isCanc(p.s)).map(p => p.e.k));
+  // nome de cada número do grupo: o RESPONSÁVEL que mais aparece nas emissões desse número casadas na planilha
+  const votos = {}, nomeDe = {};
+  for (const p of pairs) if (p.e.who && p.s.resp) { const v = votos[p.e.who] || (votos[p.e.who] = {}); v[p.s.resp] = (v[p.s.resp] || 0) + 1; }
+  for (const z in votos) nomeDe[z] = Object.keys(votos[z]).sort((m, n) => votos[z][n] - votos[z][m])[0];
+  return (_conc = {pairs, soG, soP: sh.filter(s => !used.has(s.i)), clis, byKey, canc, nomeDe});
+}
+// emissor de uma emissão: o nome (quando a planilha permite saber) ou o número que postou no grupo
+const emissor = e => e.pl ? e.who : (conciliar().nomeDe[e.who] || e.who);
+const dN = v => v === 0 ? '0' : (v > 0 ? '+' : '−') + fmtMi(Math.abs(v));
+const dR = v => Math.abs(v) < 0.005 ? 'R$ 0,00' : (v > 0 ? '+' : '−') + fmtR(Math.abs(v));
+function diffs(e, s) {
+  const d = [], sC = isCanc(s), near = (a, b) => Math.abs(a - b) < 0.01;
+  if (s.mi == null) d.push({f: 'mi', txt: 'sem milhas na planilha'});
+  else if (s.mi !== e.mi) d.push({f: 'mi', txt: 'milhas ' + dN(s.mi - e.mi)});
+  const et = e.tx || 0, eb = et + (e.bag || 0);         // a planilha soma a bagagem nas taxas
+  if (s.tx == null) d.push({f: 'tx', txt: 'sem taxas na planilha'});
+  else if (e.tx == null) d.push({f: 'tx', txt: 'sem taxas no grupo'});
+  else if (!near(s.tx, et) && !near(s.tx, eb)) d.push({f: 'tx', txt: 'taxas ' + dR(s.tx - eb)});
+  if (s.tot == null) { if (!sC) d.push({f: 'tot', txt: 'sem total na planilha'}); }
+  else if (!near(s.tot, T(e))) d.push({f: 'tot', txt: 'total ' + dR(s.tot - T(e))});
+  if (e.cp && s.cp && e.cp !== s.cp) d.push({f: 'cp', txt: 'compra diferente'});
+  return d;
+}
+
+/* ---------------- cálculo e alertas ---------------- */
+const calcTot = e => Math.round((e.mi * (e.rt || DB.cfg.rate) / 1000 + (e.tx || 0) + (e.bag || 0)) * 100) / 100;
+const T = e => e.tot != null ? e.tot : calcTot(e);
+let DUP = {ped: new Set(), loc: new Set()};
+function refreshDup() {
+  const cp = {}, cl = {};
+  for (const e of DB.em) { if (e.ped) cp[e.ped] = (cp[e.ped] || 0) + 1; if (e.loc) cl[e.loc] = (cl[e.loc] || 0) + 1; }
+  DUP = {ped: new Set(Object.keys(cp).filter(k => cp[k] > 1)), loc: new Set(Object.keys(cl).filter(k => cl[k] > 1))};
+}
+function alerts(e) {
+  const a = [];
+  if (e.pl) return a;                                // veio da planilha (resolvida): não tem o que conferir do extrato
+  if (e.tot == null) a.push(['w', 'sem total · calculado']);
+  else { const d = Math.round((e.tot - calcTot(e)) * 100) / 100; if (Math.abs(d) > 0.05) a.push(['w', 'total difere ' + (d > 0 ? '+' : '−') + fmtR(Math.abs(d))]); }
+  if (e.tx == null) a.push(['w', 'sem taxas']);
+  if (e.rt && e.rt !== DB.cfg.rate) a.push(['w', 'milheiro ' + fmtR(e.rt)]);
+  if (e.ped && DUP.ped.has(e.ped)) a.push(['w', 'pedido repetido']);
+  if (e.loc && DUP.loc.has(e.loc)) a.push(['w', 'localizador repetido']);
+  if (!e.loc) a.push(['w', 'sem localizador']);
+  if (!e.ped) a.push(['w', 'sem pedido']);
+  if (!e.cp) a.push(['i', 'sem compra']);
+  if (e.bag) a.push(['i', 'bagagem ' + fmtR(e.bag)]);
+  if (e.nl) a.push(['i', 'mensagem com ' + e.nl + ' localizadores']);
+  return a;
+}
+const hasWarn = e => alerts(e).some(x => x[0] === 'w');
+// soma de extratos; "canc" é o conjunto de extratos cancelados na planilha (ficam fora da soma)
+function agg(list, canc) {
+  const o = {n: 0, mi: 0, tx: 0, tot: 0, cn: 0, cmi: 0, ctot: 0};
+  for (const e of list) {
+    if (canc && canc.has(e.k)) { o.cn++; o.cmi += e.mi; o.ctot += T(e); }
+    else { o.n++; o.mi += e.mi; o.tx += e.tx || 0; o.tot += T(e); }
+  }
+  return o;
+}
+
+/* ---------------- fechamento do período ---------------- */
+// Nº de CPFs de uma cancelada: o que foi digitado; se nada foi digitado, o que veio no extrato do grupo.
+function cpfsDe(key, e) {
+  if (Object.prototype.hasOwnProperty.call(DB.cpf, key)) return {n: DB.cpf[key], manual: true};
+  const n = e ? (e.cpf != null ? e.cpf : e.pax) : null;
+  return {n: n == null ? null : n, manual: false};
+}
+// Emissões que estão SÓ NA PLANILHA e foram marcadas como resolvidas na Conciliação: entram no fechamento
+// junto com as do grupo, com os valores da planilha. Ficam de fora as canceladas (essas cobram por CPF)
+// e os lançamentos sem milhas (cobranças avulsas do mesmo localizador, como a do próprio cancelamento).
+const kSop = s => 'sop|' + s.d + '|' + (s.loc || s.cp) + (s.mi == null ? '|sem-milhas' : '');
+function daPlanilha(de, ate) {
+  const o = [];
+  for (const s of conciliar().soP) {
+    if (s.d < de || s.d > ate || s.mi == null || isCanc(s) || DB.res[kSop(s)] === undefined) continue;
+    o.push({k: 'p' + s.i, pl: 1, d: s.d, h: '', who: s.resp || 'Sem responsável', loc: s.loc, cp: s.cp, ped: '', mi: s.mi, tx: s.tx, tot: s.tot, bag: 0, rt: null, cpf: null, pax: null, ed: 0});
+  }
+  return o;
+}
+// Regra: emissão cancelada NA PLANILHA sai do fechamento (milhas e valor não contam)
+// e, no lugar, entra a cobrança de DB.cfg.cpfFee por CPF usado.
+function fechamento(de, ate) {
+  const inD = d => d >= de && d <= ate, R = conciliar(), fee = DB.cfg.cpfFee;
+  const zero = () => ({n: 0, mi: 0, tx: 0, tot: 0});
+  const val = [], canc = [], bruto = zero(), desc = zero(), plan = zero();
+  const item = (d, e, s) => { const key = s.loc || s.cp || (e ? e.loc || e.cp : ''), c = cpfsDe(key, e); return {key, d, e, s, cpfs: c.n, manual: c.manual, cob: c.n == null ? 0 : c.n * fee}; };
+  for (const e of DB.em) {
+    if (!inD(e.d)) continue;
+    bruto.n++; bruto.mi += e.mi; bruto.tx += e.tx || 0; bruto.tot += T(e);
+    const p = R.byKey.get(e.k);
+    if (p && isCanc(p.s)) { desc.n++; desc.mi += e.mi; desc.tx += e.tx || 0; desc.tot += T(e); canc.push(item(e.d, e, p.s)); }
+    else val.push(e);
+  }
+  // canceladas da planilha que nem foram postadas no grupo: nada a descontar, mas a cobrança por CPF vale
+  for (const s of R.soP) if (isCanc(s) && inD(s.d)) canc.push(item(s.d, null, s));
+  canc.sort((a, b) => b.d.localeCompare(a.d) || a.key.localeCompare(b.key));
+  // só na planilha, resolvidas: somam nas emissões válidas
+  for (const e of daPlanilha(de, ate)) { plan.n++; plan.mi += e.mi; plan.tx += e.tx || 0; plan.tot += T(e); val.push(e); }
+  const liq = {n: bruto.n - desc.n + plan.n, mi: bruto.mi - desc.mi + plan.mi, tx: bruto.tx - desc.tx + plan.tx, tot: bruto.tot - desc.tot + plan.tot};
+  let cmi = 0, cpfs = 0, cob = 0, pend = 0;
+  for (const c of canc) { cmi += c.s.mi || 0; cpfs += c.cpfs || 0; cob += c.cob; if (c.cpfs == null) pend++; }
+  return {de, ate, fee, val, canc, bruto, desc, plan, liq, cmi, cpfs, cob, pend, total: liq.tot + cob};
+}
+
+/* ---------------- interface ---------------- */
+const UI = {
+  tab: 'fech', gran: 'dia', open: null,
+  p: {de: '', ate: ''},                      // período escolhido: vale para todas as abas de consulta
+  f: {who: '', q: '', al: false, lim: 300},
+  c: {cli: 'auto', cia: '', view: ''},
+  pdfLista: null, pdf: false, pdfUrl: '', pdfNome: '',
+  pre: null, salvando: false, ed: null, rm: '', msg: '', resTodos: ''
+};
+const TABS = [['fech', 'Fechamento'], ['em', 'Emissões'], ['canc', 'Canceladas'], ['conc', 'Conciliação'], ['dias', 'Dias']];
+
+let timerRecado;
+function recado(t) { clearTimeout(timerRecado); const r = $('#exRecado'); r.textContent = t; r.hidden = false; timerRecado = setTimeout(() => { r.hidden = true; }, 4000); }
+
+let abasAtuais = '';
+function render() {
+  refreshDup(); _conc = null;
+  const pronto = CAR.estado === 'ok' && !!UI.p.de && SALVOS.length > 0;
+  const nC = pronto ? fechamento(UI.p.de, UI.p.ate).canc.length : 0;
+  // as abas só são redesenhadas quando mudam: um clique no meio de uma atualização não se perde
+  const abas = TABS.map(([k, l]) => `<button type="button" class="aba" data-tab="${k}" ${UI.tab === k ? 'aria-current="true"' : ''}>${l}${k === 'dias' && SALVOS.length ? `<span class="ct">${SALVOS.length}</span>` : k === 'canc' && nC ? `<span class="ct">${nC}</span>` : ''}</button>`).join('');
+  if (abas !== abasAtuais) { $('#exAbas').innerHTML = abas; abasAtuais = abas; }
+  ({fech: renderFech, em: renderEm, canc: renderCanc, conc: renderConc, dias: renderDias})[UI.tab]();
+  selo();
+}
+function bar(label, items) {
+  $('#exRodape').innerHTML = `<div class="lb">${esc(label)}</div>` + items.map(([l, v]) => `<div class="it"><span>${l}</span>${v}</div>`).join('');
+}
+const barAgg = (label, o) => bar(label, [['Emissões', fmtMi(o.n)], ['Milhas', fmtMi(o.mi)], ['Taxas', fmtR(o.tx)], ['Total', fmtR(o.tot)]]);
+const emptyMsg = `<div class="card empty">Nenhum dia salvo ainda.<br><br><button class="btn" data-tab="dias">Subir o texto do grupo</button></div>`;
+// o que mostrar no lugar da aba enquanto os dados não estão disponíveis ('' = pode desenhar)
+function travado(semVazio) {
+  if (CAR.estado === 'abrindo') return `<div class="card carregando"><div class="spin"></div>Abrindo os dias salvos${ONLINE ? ' e a planilha' : ''}…</div>`;
+  if (CAR.estado === 'erro') return `<div class="card"><div class="aviso erro" style="margin-top:0">Não consegui abrir os dados: ${esc(CAR.erro)}</div><button class="btn" data-act="recarregar">Tentar de novo</button></div>`;
+  return !semVazio && !SALVOS.length ? emptyMsg : '';
+}
+// usada no começo de cada aba de consulta: desenha o aviso e devolve true se não dá para continuar
+function parar(rotulo) {
+  const t = travado(); if (!t) return false;
+  $('#exMain').innerHTML = (UI.p.de && SALVOS.length ? periodoBar() : '') + t; bar(rotulo, []); return true;
+}
+const plural = (n, um, varios) => n + ' ' + (n === 1 ? um : varios);
+
+// barra do período escolhido (igual nas três abas que dependem da planilha)
+function periodoBar(extra) {
+  const p = UI.p, igual = k => { const r = faixaAtalho(k); return r[0] === p.de && r[1] === p.ate; };
+  return `<div class="row periodo">
+      <label class="fld">De<input type="date" id="exPDe" value="${p.de}"></label>
+      <label class="fld">Até<input type="date" id="exPAte" value="${p.ate}"></label>
+      <div class="seg">${[['dia', 'Último dia'], ['sem', 'Semana'], ['mes', 'Mês']].map(([k, l]) => `<button type="button" data-act="atalho" data-k="${k}" class="${igual(k) ? 'on' : ''}">${l}</button>`).join('')}</div>
+      ${extra || ''}
+    </div>`;
+}
+// o que avisar quando a planilha do período não está disponível
+function avisoPl() {
+  if (plPronta()) return '';
+  if (PL.estado === 'erro') return `<div class="aviso erro">Não consegui ler a planilha: ${esc(PL.erro)}. Sem ela, os cancelamentos não entram no fechamento. <button class="btn sm ghost" data-act="plreload" style="margin-left:8px">Tentar de novo</button></div>`;
+  return `<div class="aviso">Arquivo aberto fora do Apps Script: a planilha não foi lida, então nenhum cancelamento foi aplicado. Publicada como app da web, a ferramenta lê a planilha sozinha (para testar aqui, cole as linhas na aba Dias).</div>`;
+}
+// células de duas linhas, para as tabelas caberem na largura da página
+const people = e => e.cpf ? e.cpf + ' CPF' : e.pax ? e.pax + ' pax' : '—';
+
+// tabela das canceladas do período, com o campo de CPFs (usada no Fechamento e em Canceladas)
+function tabCanc(F) {
+  if (!F.canc.length) return `<div class="card empty">${plPronta() ? 'Nenhuma emissão cancelada na planilha neste período.' : 'Os cancelamentos aparecem aqui quando a planilha do período for lida.'}</div>`;
+  const rows = F.canc.map(c => {
+    const s = c.s, e = c.e;
+    return `<tr>
+      <td>${fmtDc(c.d)}</td><td class="mono b">${esc(s.loc || (e && e.loc)) || '—'}</td><td class="mono">${esc(s.cp || (e && e.cp)) || '—'}</td>
+      <td class="n">${s.mi == null ? (e ? fmtMi(e.mi) : '—') : fmtMi(s.mi)}</td>
+      <td class="n">${e ? fmtR(T(e)) : '—'}</td>
+      <td class="n"><input type="number" class="cpf ${c.cpfs == null ? 'pend' : ''}" min="0" step="1" inputmode="numeric" data-cpf="${esc(c.key)}" value="${c.cpfs == null ? '' : c.cpfs}" placeholder="?" aria-label="CPFs usados em ${esc(c.key)}">${c.cpfs != null && !c.manual ? '<br><span class="sub">do extrato</span>' : ''}</td>
+      <td class="n b">${c.cpfs == null ? '<span class="bd w">informe os CPFs</span>' : fmtR(c.cob)}</td></tr>`;
+  }).join('');
+  return `<div class="tw"><table>
+      <thead><tr><th>Data</th><th>Localizador</th><th>Compra</th><th class="n">Milhas não contadas</th><th class="n">Valor descontado</th><th class="n">CPFs usados</th><th class="n">Cobrança</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr><td colspan="3">${plural(F.canc.length, 'cancelada', 'canceladas')}</td><td class="n">${fmtMi(F.cmi)}</td><td class="n">${F.desc.n ? fmtR(F.desc.tot) : '—'}</td><td class="n">${fmtMi(F.cpfs)}</td><td class="n">${fmtR(F.cob)}</td></tr></tfoot>
+    </table></div>
+    <p class="nota">Vale o STATUS da planilha. Cada cancelada cobra ${fmtR(F.fee)} por CPF usado, no lugar das milhas. O número de CPFs vem do extrato quando ele informa; digite para corrigir ou preencher (0 = sem cobrança).${F.pend ? ` <b>${plural(F.pend, 'cancelada está', 'canceladas estão')} sem CPF informado</b> e ainda não ${F.pend === 1 ? 'entra' : 'entram'} na cobrança.` : ''}</p>`;
+}
+
+/* ----- Fechamento ----- */
+function renderFech() {
+  const main = $('#exMain');
+  if (parar('Fechamento')) return;
+  const p = UI.p, F = fechamento(p.de, p.ate), g = UI.gran, pronta = plPronta();
+  // por período, dentro do período escolhido
+  const G = new Map(), slot = k => { if (!G.has(k)) G.set(k, {val: [], canc: []}); return G.get(k); };
+  for (const e of F.val) slot(pkey(e.d, g)).val.push(e);
+  for (const c of F.canc) slot(pkey(c.d, g)).canc.push(c);
+  let rows = '';
+  for (const k of [...G.keys()].sort().reverse()) {
+    const x = G.get(k), a = agg(x.val), open = UI.open === k;
+    let cpfs = 0, cob = 0; for (const c of x.canc) { cpfs += c.cpfs || 0; cob += c.cob; }
+    rows += `<tr class="click ${open ? 'open' : ''}" data-act="open" data-k="${k}">
+      <td class="b">${open ? '▾' : '▸'} ${esc(plabel(k, g))}</td><td class="n">${fmtMi(a.n)}</td><td class="n b">${fmtMi(a.mi)}</td>
+      <td class="n">${fmtR(a.tx)}</td><td class="n">${fmtR(a.tot)}</td>
+      <td class="n">${x.canc.length || '—'}</td><td class="n">${x.canc.length ? fmtMi(cpfs) : '—'}</td><td class="n">${x.canc.length ? fmtR(cob) : '—'}</td>
+      <td class="n b">${fmtR(a.tot + cob)}</td></tr>`;
+    if (open) rows += `<tr class="det"><td colspan="9">${detail(x.val, k, g)}</td></tr>`;
+  }
+  const comp = (nome, n, mi, tx, tot, cls) => `<tr class="${cls || ''}"><td class="b">${nome}</td><td class="n">${n}</td><td class="n">${mi}</td><td class="n">${tx}</td><td class="n b">${tot}</td></tr>`;
+  const lista = UI.pdfLista == null ? F.val.length <= 600 : UI.pdfLista;
+  main.innerHTML = `
+    ${periodoBar()}
+    ${avisoPl()}
+    <div class="kpis">
+      <div class="kpi"><div class="k">Total do fechamento</div><div class="v">${fmtR(F.total)}</div>
+        <div class="s">${fmtR(F.liq.tot)} em emissões${F.canc.length ? `<br>+ ${fmtR(F.cob)} de cancelamentos` : ''}</div></div>
+      <div class="kpi"><div class="k">Milhas usadas</div><div class="v">${fmtMi(F.liq.mi)}</div>
+        <div class="s">${plural(F.liq.n, 'emissão válida', 'emissões válidas')}${F.plan.n ? ` · ${F.plan.n} só da planilha` : ''}<br>taxas ${fmtR(F.liq.tx)}</div></div>
+      <div class="kpi"><div class="k">Canceladas na planilha</div><div class="v">${fmtMi(F.canc.length)}</div>
+        <div class="s">${fmtMi(F.cmi)} milhas não contadas<br>${plural(F.cpfs, 'CPF', 'CPFs')} × ${fmtR(F.fee)} = ${fmtR(F.cob)}${F.pend ? `<br><b style="color:var(--alerta)">${F.pend} sem CPF informado</b>` : ''}</div></div>
+    </div>
+    <div class="row between" style="margin:18px 0 0">
+      <h3 style="margin:0">Composição do fechamento · ${fmtD(p.de)} a ${fmtD(p.ate)}</h3>
+      <div class="row">
+        <label class="chk"><input type="checkbox" id="exPdfLista" ${lista ? 'checked' : ''}>Listar cada emissão no PDF</label>
+        <button class="btn" data-act="pdf" ${pronta && !UI.pdf ? '' : 'disabled'}>${UI.pdf ? 'Gerando PDF…' : 'Baixar PDF do período'}</button>
+      </div>
+    </div>
+    ${UI.pdfUrl ? `<p class="nota" style="text-align:right;margin:4px 0 0"><a href="${UI.pdfUrl}" download="${esc(UI.pdfNome)}" style="color:rgb(var(--ac));font-weight:800">Se o download não começou, clique aqui para abrir “${esc(UI.pdfNome)}”</a></p>` : ''}
+    <div class="tw" style="margin-top:9px"><table>
+      <thead><tr><th></th><th class="n">Emissões</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Valor</th></tr></thead>
+      <tbody>
+        ${comp('Postado no grupo', fmtMi(F.bruto.n), fmtMi(F.bruto.mi), fmtR(F.bruto.tx), fmtR(F.bruto.tot))}
+        ${comp('(−) Canceladas na planilha', fmtMi(F.desc.n), fmtMi(F.desc.mi), fmtR(F.desc.tx), F.desc.n ? '−' + fmtR(F.desc.tot) : fmtR(0), 'canc')}
+        ${F.plan.n ? comp('(+) Só na planilha, resolvidas', fmtMi(F.plan.n), fmtMi(F.plan.mi), fmtR(F.plan.tx), fmtR(F.plan.tot)) : ''}
+        ${comp('= Emissões válidas', fmtMi(F.liq.n), fmtMi(F.liq.mi), fmtR(F.liq.tx), fmtR(F.liq.tot))}
+        ${comp('(+) Cobrança por CPF das canceladas', plural(F.canc.length, 'cancelada', 'canceladas'), '—', `${plural(F.cpfs, 'CPF', 'CPFs')} × ${fmtR(F.fee)}`, fmtR(F.cob))}
+      </tbody>
+      <tfoot><tr><td colspan="4">Total do fechamento</td><td class="n">${fmtR(F.total)}</td></tr></tfoot>
+    </table></div>
+    <div class="row between" style="margin:22px 0 9px">
+      <h3 style="margin:0">Por período</h3>
+      <div class="seg">${[['dia', 'Diário'], ['sem', 'Semanal'], ['mes', 'Mensal']].map(([k, l]) => `<button type="button" data-act="gran" data-k="${k}" class="${g === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    </div>
+    ${rows ? `<div class="tw"><table>
+      <thead><tr><th>${g === 'dia' ? 'Dia' : g === 'sem' ? 'Semana (seg a dom)' : 'Mês'}</th><th class="n">Emissões</th><th class="n">Milhas usadas</th><th class="n">Taxas</th><th class="n">Emissões (R$)</th><th class="n">Canceladas</th><th class="n">CPFs</th><th class="n">Cobrança</th><th class="n">Total</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr><td>Total do período</td><td class="n">${fmtMi(F.liq.n)}</td><td class="n">${fmtMi(F.liq.mi)}</td><td class="n">${fmtR(F.liq.tx)}</td><td class="n">${fmtR(F.liq.tot)}</td><td class="n">${F.canc.length || '—'}</td><td class="n">${F.canc.length ? fmtMi(F.cpfs) : '—'}</td><td class="n">${F.canc.length ? fmtR(F.cob) : '—'}</td><td class="n">${fmtR(F.total)}</td></tr></tfoot>
+    </table></div>` : `<div class="card empty">Nenhum dia salvo neste período.</div>`}
+    <h3>Canceladas do período · CPFs para a cobrança</h3>
+    ${tabCanc(F)}`;
+  bar(`Fechamento · ${fmtD(p.de)} a ${fmtD(p.ate)}`, [['Emissões válidas', fmtMi(F.liq.n)], ['Milhas usadas', fmtMi(F.liq.mi)], ['Cancelamentos', fmtR(F.cob)], ['Total', fmtR(F.total)]]);
+}
+function detail(list, k, g) {
+  const by = new Map();
+  for (const e of list) { const w = emissor(e); if (!by.has(w)) by.set(w, []); by.get(w).push(e); }
+  const rows = [...by.entries()].map(([w, l]) => [w, agg(l)]).sort((a, b) => b[1].tot - a[1].tot)
+    .map(([w, a]) => `<tr><td class="b">${quem(w)}</td><td class="n">${fmtMi(a.n)}</td><td class="n">${fmtMi(a.mi)}</td><td class="n">${fmtR(a.tx)}</td><td class="n b">${fmtR(a.tot)}</td></tr>`).join('');
+  return `<div style="margin-bottom:10px"><b>${esc(plabel(k, g))} · emissões válidas por emissor</b></div>
+    ${rows ? `<div class="tw"><table><thead><tr><th>Emissor</th><th class="n">Emissões</th><th class="n">Milhas usadas</th><th class="n">Taxas</th><th class="n">Total</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<div class="empty">Só canceladas neste período.</div>'}`;
+}
+
+/* ----- PDF do fechamento ----- */
+// O HTML é montado aqui e convertido em PDF pelo fxGerarPdf() do Código.gs.
+function pdfHtml(F, lista) {
+  const COR = '#C1561A';
+  const th = (t, dir) => `<th style="text-align:${dir ? 'right' : 'left'};font-size:8.5pt;color:#6B7370;font-weight:bold;border-bottom:1.5px solid #D5D8D2;padding:5px 6px;">${esc(t)}</th>`;
+  const td = (t, dir, extra) => `<td style="text-align:${dir ? 'right' : 'left'};border-bottom:1px solid #ECEEE9;padding:5px 6px;${extra || ''}">${esc(t)}</td>`;
+  const titulo = t => `<p style="font-size:9pt;font-weight:bold;letter-spacing:1px;color:${COR};margin:18px 0 6px;">${esc(t.toUpperCase())}</p>`;
+  const tabela = (cab, linhas) => `<table style="width:100%;border-collapse:collapse;font-size:9.5pt;"><tr>${cab}</tr>${linhas}</table>`;
+  const cliente = CAR.nome || 'Grupo 123';
+  const agora = new Date(), gerado = two(agora.getDate()) + '/' + two(agora.getMonth() + 1) + '/' + agora.getFullYear() + ' ' + two(agora.getHours()) + ':' + two(agora.getMinutes());
+  const B = 'font-weight:bold;';
+  let h = '<html><head><meta charset="UTF-8"><title>Fechamento do grupo de extratos</title></head><body style="font-family:Arial,Helvetica,sans-serif;color:#1B1F22;font-size:10pt;">';
+  h += `<table style="width:100%;border-collapse:collapse;border-bottom:3px solid ${COR};margin-bottom:14px;"><tr>
+      <td style="padding:0 0 10px 0;vertical-align:top;"><div style="font-size:20pt;font-weight:bold;color:${COR};">Milhas Plus</div>
+        <div style="font-size:8pt;color:#6B7370;letter-spacing:1px;">FECHAMENTO · GRUPO DE EXTRATOS</div></td>
+      <td style="padding:0 0 10px 0;text-align:right;vertical-align:top;font-size:9pt;color:#555;">
+        <div style="font-size:12pt;font-weight:bold;color:#1B1F22;">${esc(cliente || 'Grupo de extratos')}</div>
+        Período: ${fmtD(F.de)} a ${fmtD(F.ate)}<br>Emitido em ${gerado}</td></tr></table>`;
+
+  h += titulo('Resumo do fechamento');
+  h += tabela(th('') + th('Emissões', 1) + th('Milhas', 1) + th('Milheiro', 1) + th('Taxas', 1) + th('Valor', 1),
+    '<tr>' + td('Emissões Latam', 0, B) + td(fmtMi(F.liq.n), 1) + td(fmtMi(F.liq.mi), 1) + td(fmtR(DB.cfg.rate), 1) + td(fmtR(F.liq.tx), 1) + td(fmtR(F.liq.tot), 1, B) + '</tr>' +
+    (F.canc.length ? '<tr>' + td('Cobrança por CPF das canceladas', 0, B) + td(String(F.canc.length), 1) + td('—', 1) + td('—', 1) + td(plural(F.cpfs, 'CPF', 'CPFs') + ' × ' + fmtR(F.fee), 1) + td(fmtR(F.cob), 1, B) + '</tr>' : ''));
+  h += `<table style="width:100%;border-collapse:collapse;background:#F6E7D3;margin-top:14px;"><tr>
+      <td style="padding:12px 16px;"><b style="font-size:11pt;">Total do fechamento</b><br><span style="font-size:8.5pt;color:#6B7370;">${plural(F.liq.n, 'emissão válida', 'emissões válidas')} · ${fmtMi(F.liq.mi)} milhas usadas${F.canc.length ? ' · ' + plural(F.canc.length, 'cancelada', 'canceladas') : ''}</span></td>
+      <td style="padding:12px 16px;text-align:right;font-size:16pt;font-weight:bold;color:#9B5B10;">${fmtR(F.total)}</td></tr></table>`;
+
+  // por dia
+  const D = new Map(), slot = k => { if (!D.has(k)) D.set(k, {val: [], canc: []}); return D.get(k); };
+  for (const e of F.val) slot(e.d).val.push(e);
+  for (const c of F.canc) slot(c.d).canc.push(c);
+  const dias = [...D.keys()].sort();
+  if (dias.length > 1) {
+    h += titulo('Por dia');
+    h += tabela(th('Dia') + th('Emissões', 1) + th('Milhas usadas', 1) + th('Taxas', 1) + th('Emissões (R$)', 1) + th('Canceladas', 1) + th('CPFs', 1) + th('Cobrança', 1) + th('Total', 1),
+      dias.map(k => {
+        const x = D.get(k), a = agg(x.val); let cpfs = 0, cob = 0; for (const c of x.canc) { cpfs += c.cpfs || 0; cob += c.cob; }
+        return '<tr>' + td(fmtD(k) + ' · ' + DIAS[toUTC(k).getUTCDay()]) + td(fmtMi(a.n), 1) + td(fmtMi(a.mi), 1) + td(fmtR(a.tx), 1) + td(fmtR(a.tot), 1) +
+          td(x.canc.length ? String(x.canc.length) : '—', 1) + td(x.canc.length ? fmtMi(cpfs) : '—', 1) + td(x.canc.length ? fmtR(cob) : '—', 1) + td(fmtR(a.tot + cob), 1, B) + '</tr>';
+      }).join(''));
+  }
+
+  h += titulo('Emissões canceladas');
+  if (F.canc.length) {
+    h += tabela(th('Data') + th('Localizador') + th('Compra') + th('Milhas não contadas', 1) + th('CPFs usados', 1) + th('Cobrança', 1),
+      F.canc.slice().sort((a, b) => a.d.localeCompare(b.d)).map(c => '<tr>' + td(fmtD(c.d)) + td(c.s.loc || (c.e ? c.e.loc : '') || '—', 0, 'font-family:Courier New,monospace;font-weight:bold;') + td(c.s.cp || (c.e ? c.e.cp : '') || '—', 0, 'font-family:Courier New,monospace;') +
+        td(c.s.mi == null ? '—' : fmtMi(c.s.mi), 1) + td(c.cpfs == null ? '—' : String(c.cpfs), 1) + td(c.cpfs == null ? '—' : fmtR(c.cob), 1) + '</tr>').join('') +
+      '<tr>' + td('Total', 0, B) + td('') + td('') + td(fmtMi(F.cmi), 1, B) + td(fmtMi(F.cpfs), 1, B) + td(fmtR(F.cob), 1, B) + '</tr>');
+    h += `<p style="font-size:8.5pt;color:#6B7370;margin:6px 0 0;">Emissão cancelada não entra na conta de milhas nem no valor das emissões; é cobrado ${fmtR(F.fee)} por CPF usado.</p>`;
+  } else h += '<p style="color:#8A918E;">Nenhuma emissão cancelada no período.</p>';
+
+  if (lista) {
+    h += titulo('Emissões do período');
+    if (F.val.length) {
+      h += tabela(th('Data') + th('Localizador') + th('Compra') + th('Pedido') + th('Milhas', 1) + th('Taxas', 1) + th('Total', 1),
+        F.val.slice().sort((a, b) => (a.d + a.h).localeCompare(b.d + b.h)).map(e => '<tr>' + td(fmtD(e.d)) + td(e.loc || '—', 0, 'font-family:Courier New,monospace;font-weight:bold;') + td(e.cp || '—', 0, 'font-family:Courier New,monospace;') + td(e.ped || '—') +
+          td(fmtMi(e.mi), 1) + td(e.tx == null ? '—' : fmtR(e.tx), 1) + td(fmtR(T(e)), 1) + '</tr>').join('') +
+        '<tr>' + td('Total', 0, B) + td('') + td('') + td('') + td(fmtMi(F.liq.mi), 1, B) + td(fmtR(F.liq.tx), 1, B) + td(fmtR(F.liq.tot), 1, B) + '</tr>');
+    } else h += '<p style="color:#8A918E;">Nenhuma emissão válida no período.</p>';
+  }
+  h += '<p style="margin-top:26px;border-top:1px solid #D5D8D2;padding-top:8px;font-size:8pt;color:#8A918E;">Milhas Plus · Fechamento do grupo de extratos</p></body></html>';
+  return h;
+}
+function baixarArquivo(base64, nome) {
+  const bin = atob(base64), arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  if (UI.pdfUrl) URL.revokeObjectURL(UI.pdfUrl);
+  const url = URL.createObjectURL(new Blob([arr], {type: 'application/pdf'}));
+  const a = document.createElement('a'); a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  UI.pdfUrl = url; UI.pdfNome = nome;
+}
+function baixarPdf() {
+  if (UI.pdf || !plPronta()) return;
+  const F = fechamento(UI.p.de, UI.p.ate), lista = UI.pdfLista == null ? F.val.length <= 600 : UI.pdfLista;
+  const html = pdfHtml(F, lista);
+  const nome = 'Fechamento grupo de extratos ' + fmtD(F.de).replace(/\//g, '-') + ' a ' + fmtD(F.ate).replace(/\//g, '-') + '.pdf';
+  if (!ONLINE) {                            // arquivo aberto direto: usa a impressão do navegador ("Salvar como PDF")
+    const w = window.open('', '_blank');
+    if (!w) { recado('Permita pop-ups para abrir o resumo'); return; }
+    w.document.write(html); w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+    return;
+  }
+  UI.pdf = true; render();
+  chamar('fxGerarPdf', html).then(res => { UI.pdf = false; baixarArquivo(res.base64, nome); render(); recado('PDF baixado'); },
+    err => { UI.pdf = false; render(); recado('Não consegui gerar o PDF: ' + err.message); });
+}
+
+/* ----- Emissões ----- */
+function filtered() {
+  const f = UI.f, p = UI.p, q = norm(f.q.trim()), qd = q.replace(/[.,\s]/g, ''), isNum = /^\d{3,}$/.test(qd);
+  const extra = daPlanilha(p.de, p.ate), todas = extra.length ? DB.em.concat(extra).sort((a, b) => (b.d + b.h).localeCompare(a.d + a.h)) : DB.em;
+  return todas.filter(e => {
+    if (e.d < p.de || e.d > p.ate) return false;
+    if (f.who && emissor(e) !== f.who) return false;
+    if (f.al && !hasWarn(e)) return false;
+    if (q) {
+      const hay = norm([e.loc, e.cp, e.ped, e.who, emissor(e)].join(' '));
+      const nums = [e.mi, Math.round(T(e) * 100), Math.round((e.tx || 0) * 100), e.ped].join(' ');
+      if (!hay.includes(q) && !(isNum && nums.includes(qd))) return false;
+    }
+    return true;
+  });
+}
+function renderEm() {
+  if (parar('Emissões')) return;
+  const f = UI.f, p = UI.p, whos = [...new Set(DB.em.filter(e => e.d >= p.de && e.d <= p.ate).concat(daPlanilha(p.de, p.ate)).map(emissor))].sort();
+  $('#exMain').innerHTML = periodoBar(`
+      <label class="fld">Emissor<select id="exFWho"><option value="">Todos</option>${whos.map(w => `<option ${f.who === w ? 'selected' : ''}>${esc(w)}</option>`).join('')}</select></label>
+      <label class="fld" style="flex:1;min-width:190px">Buscar<input type="search" id="exFQ" value="${esc(f.q)}" placeholder="Localizador, compra, pedido, milhas ou valor" style="max-width:none"></label>
+      <label class="chk"><input type="checkbox" id="exFAl" ${f.al ? 'checked' : ''}>Só com alerta</label>
+      <button class="btn ghost" data-act="clearf">Limpar filtros</button>`) + `
+    ${avisoPl()}
+    <div id="exEmTable"></div>`;
+  drawEm();
+}
+function statusCell(e, canc) {
+  if (e.pl) return '<span class="bd i">só na planilha · resolvida</span>';
+  const a = alerts(e);
+  return (canc.has(e.k) ? '<span class="bd c">cancelada na planilha</span>' : '') + (e.ed ? '<span class="bd i">editada</span>' : '') + a.map(x => `<span class="bd ${x[0]}">${esc(x[1])}</span>`).join('') || '<span class="bd ok">ok</span>';
+}
+function drawEm() {
+  const list = filtered(), show = list.slice(0, UI.f.lim), canc = conciliar().canc;
+  const rows = show.map(e => `<tr class="${canc.has(e.k) ? 'canc' : ''}">
+    <td>${fmtDc(e.d)} ${e.h ? e.h.slice(0, 5) : ''}</td><td title="${e.pl ? 'responsável na planilha' : 'no grupo: ' + quem(e.who)}">${quem(emissor(e))}</td>
+    <td class="mono b">${esc(e.loc) || '—'}</td><td class="mono">${esc(e.cp) || '—'}</td><td class="mono">${esc(e.ped) || '—'}</td>
+    <td class="n b">${fmtMi(e.mi)}</td><td class="n">${e.tx == null ? '—' : fmtR(e.tx)}</td><td class="n b">${fmtR(T(e))}</td>
+    <td class="n">${people(e)}</td><td style="white-space:normal;min-width:150px">${statusCell(e, canc)}</td></tr>`).join('');
+  $('#exEmTable').innerHTML = list.length ? `<div class="tw"><table>
+      <thead><tr><th>Data</th><th>Emissor</th><th>Localizador</th><th>Compra</th><th>Pedido</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th class="n">CPFs</th><th>Situação</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>
+      ${list.length > show.length ? `<p style="text-align:center"><button class="btn ghost" data-act="more">Mostrar mais (${list.length - show.length} restantes)</button></p>` : ''}
+      <p class="nota">Extratos dos dias salvos, dentro do período escolhido, mais as emissões que estão só na planilha e foram marcadas como resolvidas na Conciliação. Para corrigir um extrato, edite o dia na aba Dias.</p>`
+    : `<div class="card empty">Nenhuma emissão com esses filtros neste período.</div>`;
+  const a = agg(list, canc);
+  barAgg('Emissões do período' + (a.cn ? ` · sem ${plural(a.cn, 'cancelada', 'canceladas')}` : ''), a);
+}
+
+/* ----- Canceladas ----- */
+function renderCanc() {
+  const main = $('#exMain');
+  if (parar('Canceladas')) return;
+  const p = UI.p, F = fechamento(p.de, p.ate);
+  main.innerHTML = `
+    ${periodoBar()}
+    ${avisoPl()}
+    <h3>Canceladas na planilha · ${fmtD(p.de)} a ${fmtD(p.ate)}</h3>
+    ${tabCanc(F)}`;
+  bar(`Canceladas · ${fmtD(p.de)} a ${fmtD(p.ate)}`, [['Canceladas', fmtMi(F.canc.length)], ['Milhas não contadas', fmtMi(F.cmi)], ['CPFs', fmtMi(F.cpfs)], ['Cobrança', fmtR(F.cob)]]);
+}
+
+/* ----- Conciliação ----- */
+// Três listas de pendência (divergentes, só no grupo, só na planilha), cada linha com o emissor
+// responsável e o botão "Resolvido". A marca fica salva no servidor junto com a situação que foi
+// resolvida: se a divergência mudar depois, a linha volta a aparecer como pendente.
+const VIEWS = [['div', 'Divergentes'], ['sog', 'Só no grupo'], ['sop', 'Só na planilha'], ['res', 'Resolvidos'], ['ok', 'Conferem']];
+const PEND = ['div', 'sog', 'sop'];
+const kDiv = x => 'div|' + x.e.d + '|' + (x.e.loc || x.e.cp);
+const sDiv = x => x.dif.map(y => y.txt).join(' · ');
+const kSog = e => 'sog|' + e.d + '|' + (e.loc || e.cp);
+// item da lista "só na planilha" que, resolvido, soma no fechamento (tem milhas e não está cancelado)
+const vaiF = it => it.k.indexOf('sop|') === 0 && !!it.s && it.s.mi != null && !isCanc(it.s);
+
+function listasConc() {
+  const f = UI.c, p = UI.p, R = conciliar(), res = DB.res;
+  const inD = d => d >= p.de && d <= p.ate;
+  // online, o servidor já entrega só o cliente do grupo; o filtro daqui vale para a planilha colada (teste)
+  const okCli = s => PL.clientes.length ? true : f.cli === 'auto' ? (!R.clis.size || R.clis.has(s.cli)) : (!f.cli || s.cli === f.cli);
+  const inS = s => inD(s.d) && okCli(s) && (!f.cia || s.cia === f.cia);
+  const L = {div: [], sog: [], sop: [], res: [], ok: []};
+  for (const x of R.pairs) {
+    if (!inD(x.e.d)) continue;
+    if (!x.dif.length) { L.ok.push(x); continue; }
+    const k = kDiv(x), sig = sDiv(x);
+    if (res[k] === sig) L.res.push({t: 'div', k, d: x.e.d, sig, e: x.e, s: x.s});
+    else L.div.push({k, d: x.e.d, sig, x, mudou: res[k] !== undefined});
+  }
+  for (const e of R.soG) {
+    if (!inD(e.d)) continue;
+    const k = kSog(e);
+    if (res[k] !== undefined) L.res.push({t: 'sog', k, d: e.d, sig: 'só no grupo', e, s: null});
+    else L.sog.push({k, d: e.d, sig: 'só no grupo', e});
+  }
+  for (const s of R.soP) {
+    if (!inS(s)) continue;
+    const k = kSop(s);
+    if (res[k] !== undefined) L.res.push({t: 'sop', k, d: s.d, sig: 'só na planilha', e: null, s, fim: isCanc(s) ? 'cancelada · cobra por CPF' : s.mi == null ? 'lançamento sem milhas · não soma' : 'entrou no fechamento'});
+    else L.sop.push({k, d: s.d, sig: 'só na planilha', s});
+  }
+  L.res.sort((a, b) => b.d.localeCompare(a.d) || a.k.localeCompare(b.k));
+  return {L, R, inD, inS};
+}
+// marca como resolvido (ou reabre, com sig vazio), grava no servidor e relê a planilha por trás
+let resVoo = 0;
+function resolver(itens) {
+  if (!itens.length) return;
+  for (const it of itens) { resOver[it.k] = it.s; if (it.s) DB.res[it.k] = it.s; else delete DB.res[it.k]; }
+  resVoo++; UI.resTodos = ''; if (CAR.estado === 'ok') CAR.atualizando = true; render();
+  const n = itens.length, reabriu = !itens[0].s, nf = itens.filter(it => it.f).length;
+  const fim = erro => {
+    if (erro) recado('Não consegui gravar a marca: ' + erro + '. A lista voltou ao que está salvo.');
+    if (--resVoo > 0) return;                       // ainda há marcas a caminho: a releitura fica para a última
+    for (const k in resOver) delete resOver[k];
+    abrir(false, true, erro ? null : () => recado((reabriu ? 'Reaberta' : n > 1 ? n + ' marcadas como resolvidas' : 'Marcada como resolvida') + (nf ? (reabriu ? ' · saiu do fechamento' : ' · ' + (nf === 1 ? 'entrou' : nf + ' entraram') + ' no fechamento') : '') + ' · planilha relida' + (PL.lidoEm ? ' às ' + PL.lidoEm.toTimeString().slice(0, 5) : '') + '.'));
+  };
+  chamar('fxResolver', JSON.stringify(itens.map(it => ({k: it.k, d: it.d, s: it.s})))).then(() => fim(''), err => fim(err.message));
+}
+
+function renderConc() {
+  const main = $('#exMain');
+  if (parar('Conciliação')) return;
+  if (!PL.rows.length && PL.estado !== 'ok' && PL.estado !== 'colada') {
+    main.innerHTML = periodoBar() + (
+      PL.estado === 'erro' ? `<div class="card"><h3>Conciliação com a planilha</h3><div class="aviso erro">Não consegui ler a planilha: ${esc(PL.erro)}</div><button class="btn" data-act="plreload">Tentar de novo</button></div>` :
+      `<div class="card"><h3>Conciliação com a planilha</h3><p>Este arquivo está aberto fora do Apps Script, então não alcança a planilha online. Publicada como app da web, a ferramenta lê a planilha sozinha.</p><p class="mut">Para testar por aqui, cole as linhas da planilha na aba Dias.</p><button class="btn" data-tab="dias">Ir para Dias</button></div>`);
+    bar('Conciliação · grupo × planilha', []); return;
+  }
+  const f = UI.c, sh = SH(), uniq = k => [...new Set(sh.map(s => s[k]).filter(Boolean))].sort();
+  const opts = (l, cur) => l.map(v => `<option ${cur === v ? 'selected' : ''}>${esc(v)}</option>`).join('');
+  main.innerHTML = periodoBar(`
+      ${PL.clientes.length
+        ? `<div class="fld">Cliente lido da planilha<span class="fixo">${esc(PL.clientes.join(' · '))}</span></div>`
+        : `<label class="fld">Cliente (planilha)<select id="exKCli"><option value="auto" ${f.cli === 'auto' ? 'selected' : ''}>Clientes do grupo (automático)</option><option value="" ${f.cli === '' ? 'selected' : ''}>Todos</option>${opts(uniq('cli'), f.cli)}</select></label>`}
+      <label class="fld">Companhia<select id="exKCia"><option value="">Todas</option>${opts(uniq('cia'), f.cia)}</select></label>
+      ${ONLINE ? `<button class="btn ghost" data-act="plreload">Atualizar planilha</button>` : ''}`) + `
+    <div id="exConcBody"></div>`;
+  drawConc();
+}
+function drawConc() {
+  const f = UI.c, sh = SH(), {L, R, inD, inS} = listasConc();
+  if (!UI.c.view) UI.c.view = (VIEWS.find(v => L[v[0]].length) || VIEWS[0])[0];
+  const view = UI.c.view;
+
+  // resumo do período: grupo × planilha (bagagem somada às taxas do grupo, como na planilha)
+  const G = {n: 0, mi: 0, tx: 0, tot: 0, cn: 0, cmi: 0}, P = {n: 0, mi: 0, tx: 0, tot: 0, cn: 0, cmi: 0};
+  for (const e of DB.em) if (inD(e.d)) {
+    if (R.canc.has(e.k)) { G.cn++; G.cmi += e.mi; } else { G.n++; G.mi += e.mi; G.tx += (e.tx || 0) + (e.bag || 0); G.tot += T(e); }
+  }
+  for (const s of sh) if (inS(s)) {
+    if (isCanc(s)) { P.cn++; P.cmi += s.mi || 0; } else { if (s.mi != null) P.n++; P.mi += s.mi || 0; P.tx += s.tx || 0; P.tot += s.tot || 0; }
+  }
+  const lin = (nome, o) => `<tr><td class="b">${nome}</td><td class="n">${fmtMi(o.n)}</td><td class="n b">${fmtMi(o.mi)}</td><td class="n">${fmtR(o.tx)}</td><td class="n b">${fmtR(o.tot)}</td><td class="n">${fmtMi(o.cn)}</td><td class="n">${fmtMi(o.cmi)}</td></tr>`;
+
+  const has = (x, k) => x.dif.some(y => y.f === k);
+  const vz = v => v == null || v === '';
+  const cmp = (a, b, fmt, dif) => dif
+    ? `<div class="cmp"><span><i>grupo</i>${vz(a) ? '—' : fmt(a)}</span><span class="p"><i>planilha</i>${vz(b) ? '—' : fmt(b)}</span></div>`
+    : (vz(a) ? (vz(b) ? '—' : fmt(b)) : fmt(a));
+  const info = x => {
+    const o = [], e = x.e, s = x.s;
+    if (x.via === 'cp' && !e.loc && s.loc) o.push('casado pela compra · localizador na planilha: ' + s.loc);
+    if (s.d !== e.d) o.push('data na planilha: ' + fmtD(s.d));
+    if (e.bag && s.tx != null && Math.abs(s.tx - (e.tx || 0) - e.bag) < 0.01) o.push('bagagem dentro das taxas da planilha');
+    for (const y of x.extra) o.push(y.mi == null ? 'outro lançamento na planilha: ' + (y.tot != null ? fmtR(y.tot) : 'sem valor') + ' · ' + (y.st || 'sem status') : 'localizador repetido na planilha');
+    return o.map(t => `<span class="bd i">${esc(t)}</span>`).join('');
+  };
+  const sit = s => isCanc(s) ? `<span class="bd c">${esc(s.st)}</span>` : esc(s.st) || '—';
+  // emissor responsável: o nome da coluna RESPONSÁVEL da planilha e/ou quem postou o extrato no grupo
+  // (extrato que não está na planilha: o nome vem das outras emissões que o mesmo número já tem casadas na planilha)
+  const nomeDe = R.nomeDe;
+  const resp = (e, s) => {
+    const nome = s && s.resp ? s.resp : '', zap = e ? e.who : '';
+    if (nome && zap) return `<td><span class="b">${esc(nome)}</span><br><span class="sub">no grupo: ${quem(zap)}</span></td>`;
+    if (nome) return `<td><span class="b">${esc(nome)}</span></td>`;
+    if (zap && nomeDe[zap]) return `<td><span class="b">${esc(nomeDe[zap])}</span><br><span class="sub">no grupo: ${quem(zap)} · nome pelas outras emissões desse número na planilha</span></td>`;
+    if (zap) return `<td><span class="b">${quem(zap)}</span><br><span class="sub">quem postou no grupo</span></td>`;
+    return '<td class="mut">não informado</td>';
+  };
+  const dh = e => fmtDc(e.d) + (e.h ? ' ' + e.h.slice(0, 5) : '');
+  const loc = v => `<td class="mono b">${esc(v) || '—'}</td>`, cod = v => `<td class="mono">${esc(v) || '—'}</td>`;
+  const bt = k => `<td class="acao"><button class="btn sm" data-act="res1" data-k="${esc(k)}">Resolvido</button></td>`;
+  const LIM = 400, cut = l => l.slice(0, LIM);
+  let table = '';
+  if (view === 'div') table = `<thead><tr><th>Data</th><th>Emissor responsável</th><th>Localizador</th><th>Compra</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th title="Status na planilha de vendas">Status</th><th>Diferença (planilha − grupo)</th><th class="acao"></th></tr></thead><tbody>${cut(L.div).map(it => {
+      const x = it.x, e = x.e, s = x.s;
+      return `<tr><td>${dh(e)}</td>${resp(e, s)}${loc(e.loc || s.loc)}
+        <td class="mono">${has(x, 'cp') ? `${esc(e.cp)}<br><span class="p">planilha: ${esc(s.cp)}</span>` : esc(e.cp || s.cp) || '—'}</td>
+        <td class="n">${cmp(e.mi, s.mi, fmtMi, has(x, 'mi'))}</td><td class="n">${cmp(e.tx, s.tx, fmtR, has(x, 'tx'))}</td><td class="n">${cmp(T(e), s.tot, fmtR, has(x, 'tot'))}</td>
+        <td>${sit(s)}</td>
+        <td class="wrapc">${x.dif.map(y => `<span class="bd w">${esc(y.txt)}</span>`).join('')}${info(x)}${it.mudou ? '<span class="bd c">mudou depois de marcada como resolvida</span>' : ''}</td>${bt(it.k)}</tr>`;
+    }).join('')}</tbody>`;
+  else if (view === 'sog') table = `<thead><tr><th>Data</th><th>Emissor responsável</th><th>Localizador</th><th>Compra</th><th>Pedido</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th>Situação</th><th class="acao"></th></tr></thead><tbody>${cut(L.sog).map(it => {
+      const e = it.e;
+      return `<tr><td>${dh(e)}</td>${resp(e, null)}${loc(e.loc)}${cod(e.cp)}${cod(e.ped)}
+        <td class="n b">${fmtMi(e.mi)}</td><td class="n">${e.tx == null ? '—' : fmtR(e.tx)}</td><td class="n b">${fmtR(T(e))}</td><td><span class="bd w">não está na planilha</span></td>${bt(it.k)}</tr>`;
+    }).join('')}</tbody>`;
+  else if (view === 'sop') table = `<thead><tr><th>Data</th><th>Emissor responsável</th><th>Localizador</th><th>Compra</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th>Companhia</th><th>Status</th>${PL.clientes.length ? '' : '<th>Cliente</th>'}<th>Situação</th><th class="acao"></th></tr></thead><tbody>${cut(L.sop).map(it => {
+      const s = it.s;
+      return `<tr class="${isCanc(s) ? 'canc' : ''}"><td>${fmtDc(s.d)}</td>${resp(null, s)}${loc(s.loc)}${cod(s.cp)}
+        <td class="n b">${s.mi == null ? '—' : fmtMi(s.mi)}</td><td class="n">${s.tx == null ? '—' : fmtR(s.tx)}</td><td class="n b">${s.tot == null ? '—' : fmtR(s.tot)}</td>
+        <td>${esc(s.cia) || '—'}</td><td>${sit(s)}</td>${PL.clientes.length ? '' : `<td class="wrapc">${esc(s.cli) || '—'}</td>`}
+        <td><span class="bd w">não está nos dias salvos</span>${s.mi == null ? '<span class="bd i">lançamento sem milhas · não soma no fechamento</span>' : isCanc(s) ? '<span class="bd i">cancelada · já cobra por CPF</span>' : ''}</td>${bt(it.k)}</tr>`;
+    }).join('')}</tbody>`;
+  else if (view === 'res') table = `<thead><tr><th>Lista</th><th>Data</th><th>Emissor responsável</th><th>Localizador</th><th>Compra</th><th class="n">Milhas</th><th class="n">Total</th><th>O que foi resolvido</th><th class="acao"></th></tr></thead><tbody>${cut(L.res).map(it => {
+      const e = it.e, s = it.s, nome = it.t === 'div' ? 'Divergente' : it.t === 'sog' ? 'Só no grupo' : 'Só na planilha';
+      return `<tr><td><span class="bd ok">${nome}</span></td><td>${fmtDc(it.d)}</td>${resp(e, s)}${loc((e && e.loc) || (s && s.loc))}${cod((e && e.cp) || (s && s.cp))}
+        <td class="n">${e ? fmtMi(e.mi) : s.mi == null ? '—' : fmtMi(s.mi)}</td><td class="n">${e ? fmtR(T(e)) : s.tot == null ? '—' : fmtR(s.tot)}</td>
+        <td class="wrapc">${esc(it.sig)}${it.fim ? ` <span class="bd ${it.fim === 'entrou no fechamento' ? 'ok' : 'i'}">${it.fim}</span>` : ''}</td><td class="acao"><button class="btn sm ghost" data-act="reabrir" data-k="${esc(it.k)}">Reabrir</button></td></tr>`;
+    }).join('')}</tbody>`;
+  else table = `<thead><tr><th>Data</th><th>Emissor responsável</th><th>Localizador</th><th>Compra</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th title="Status na planilha de vendas">Status</th><th>Observação</th></tr></thead><tbody>${cut(L.ok).map(x => {
+      const e = x.e, s = x.s;
+      return `<tr class="${isCanc(s) ? 'canc' : ''}"><td>${dh(e)}</td>${resp(e, s)}${loc(e.loc || s.loc)}${cod(e.cp || s.cp)}
+        <td class="n b">${fmtMi(e.mi)}</td><td class="n">${s.tx == null ? '—' : fmtR(s.tx)}</td><td class="n b">${s.tot == null ? '—' : fmtR(s.tot)}</td><td>${sit(s)}</td><td class="wrapc">${info(x)}</td></tr>`;
+    }).join('')}</tbody>`;
+  const n = L[view].length;
+  const fonte = PL.estado === 'colada' ? 'Planilha colada (modo de teste).' : PL.de ? `Planilha lida online de ${fmtD(PL.de)} a ${fmtD(PL.ate)}${PL.abas.length ? ' · abas: ' + esc(PL.abas.join(', ')) : ''}.` : '';
+  const cartao = ([k, l]) => `<div class="vcard ${view === k ? 'on' : ''}">
+      <button type="button" class="vsel" data-act="cview" data-k="${k}"><b>${fmtMi(L[k].length)}</b><span>${l}</span></button>
+      ${PEND.includes(k) ? `<button type="button" class="btn sm ${UI.resTodos === k ? '' : 'ghost'}" data-act="restodos" data-k="${k}" ${L[k].length ? '' : 'disabled'}>${UI.resTodos === k ? 'Confirmar: ' + plural(L[k].length, 'resolvida', 'resolvidas') : 'Todos resolvidos'}</button>` : ''}
+      ${k === 'sop' && UI.resTodos === k ? `<span class="vnota">${plural(L[k].filter(vaiF).length, 'entra', 'entram')} no fechamento</span>` : ''}
+    </div>`;
+  $('#exConcBody').innerHTML = `
+    ${PL.estado === 'erro' ? `<div class="aviso erro">A última leitura da planilha falhou (${esc(PL.erro)}); os dados abaixo são da leitura anterior.</div>` : ''}
+    <div class="tw"><table>
+      <thead><tr><th>Resumo do período</th><th class="n">Emissões</th><th class="n">Milhas</th><th class="n">Taxas</th><th class="n">Total</th><th class="n">Canceladas</th><th class="n">Milhas canceladas</th></tr></thead>
+      <tbody>${lin('Grupo', G)}${lin('Planilha', P)}</tbody>
+      <tfoot><tr><td>Diferença (planilha − grupo)</td><td class="n">${dN(P.n - G.n)}</td><td class="n">${dN(P.mi - G.mi)}</td><td class="n">${dR(P.tx - G.tx)}</td><td class="n">${dR(P.tot - G.tot)}</td><td class="n">${dN(P.cn - G.cn)}</td><td class="n">${dN(P.cmi - G.cmi)}</td></tr></tfoot>
+    </table></div>
+    <div class="views">${VIEWS.map(cartao).join('')}</div>
+    ${n ? `<div class="tw"><table>${table}</table></div>${n > LIM ? `<p class="nota">Mostrando as primeiras ${LIM} de ${fmtMi(n)} linhas — reduza o período.</p>` : ''}`
+        : `<div class="card empty">${PEND.includes(view) ? 'Nenhuma pendência nesta lista para o período.' : 'Nada nesta lista para o período.'}</div>`}
+    <p class="nota">${fonte} ${PL.clientes.length ? 'Só entram as linhas do cliente ' + esc(PL.clientes.join(', ')) + '. ' : f.cli === 'auto' && R.clis.size ? 'Clientes do grupo na planilha: ' + esc([...R.clis].join(', ')) + '. ' : ''}O cruzamento é pelo localizador (ou pelo código de compra, quando o extrato veio sem localizador); são comparados milhas, taxas e total. “Resolvido” guarda a marca e relê a planilha; se a diferença mudar depois, a linha volta para a lista. <b>Emissão que está só na planilha, depois de resolvida, entra no fechamento com os valores da planilha</b> (cancelada continua cobrando por CPF; lançamento sem milhas não soma). Nada é gravado na planilha de vendas.</p>`;
+  bar('Conciliação · grupo × planilha', VIEWS.map(([k, l]) => [l, fmtMi(L[k].length)]));
+}
+
+/* ----- Dias: subir, editar e remover ----- */
+const quando = iso => { if (!iso) return '—'; const t = new Date(iso); return isNaN(t) ? '—' : two(t.getDate()) + '/' + two(t.getMonth() + 1) + '/' + t.getFullYear() + ' ' + two(t.getHours()) + ':' + two(t.getMinutes()); };
+const nv = v => v == null ? '' : v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+// extrato -> linha que o servidor grava
+const paraLinha = e => [e.h, e.who, e.loc, e.cp, e.ped, e.mi, e.tx, e.tot, e.bag || 0, e.rt, e.cpf, e.pax, e.ed ? 1 : 0];
+
+function renderDias() {
+  const main = $('#exMain');
+  if (UI.ed) { renderEditor(); return; }
+  if (CAR.estado !== 'ok') { main.innerHTML = travado(true); bar('Dias salvos', []); return; }
+  const pre = UI.pre;
+  let topo = UI.msg ? `<div class="aviso ok">${esc(UI.msg)}</div>` : '';
+  if (pre && pre.err) topo += `<div class="card"><h3>Texto não reconhecido</h3><p style="margin-bottom:0">${esc(pre.err)}</p></div>`;
+  else if (pre && pre.kind === 'sheet') topo += `<div class="card"><h3>Planilha colada (modo de teste)</h3>
+      <div class="stats"><div><b>${pre.linhas}</b><span>linhas lidas</span></div><div><b>${pre.ign}</b><span>linhas ignoradas</span></div></div>
+      <p class="mut" style="margin-bottom:0">Fica só na memória: ao recarregar a página, some.</p></div>`;
+  else if (pre) {
+    const marcados = pre.dias.filter(x => x.on).length;
+    topo += `<div class="card"><h3>Dias encontrados no texto</h3>
+      <div class="stats">
+        <div><b>${pre.nmsg}</b><span>mensagens lidas</span></div>
+        <div><b>${pre.dias.length}</b><span>${pre.dias.length === 1 ? 'dia no texto' : 'dias no texto'}</span></div>
+        <div><b>${pre.dias.reduce((s, x) => s + x.em.length, 0)}</b><span>extratos</span></div>
+        <div><b>${pre.apag}</b><span>mensagens apagadas</span></div>
+      </div>
+      <div class="tw"><table>
+        <thead><tr><th>Salvar</th><th>Dia</th><th class="n">Extratos</th><th class="n">Milhas</th><th class="n">Total postado</th><th>Situação</th></tr></thead>
+        <tbody>${pre.dias.map((x, i) => `<tr>
+          <td><input type="checkbox" data-pre="${i}" ${x.on ? 'checked' : ''} ${x.st === 'igual' ? 'disabled' : ''} aria-label="Salvar o dia ${fmtD(x.d)}"></td>
+          <td class="b">${esc(plabel(x.d, 'dia'))}</td><td class="n">${fmtMi(x.em.length)}</td><td class="n">${fmtMi(x.mi)}</td><td class="n">${fmtR(x.tot)}</td>
+          <td class="wrapc" style="max-width:none">${x.st === 'novo' ? '<span class="bd ok">dia novo</span>' : x.st === 'igual' ? '<span class="bd i">já salvo, igual</span>' : `<span class="bd w">já salvo com ${plural(x.sv.n, 'extrato', 'extratos')} · ${fmtR(x.sv.tot)}</span><span class="sub">marcar substitui o dia inteiro, inclusive o que foi editado</span>`}</td></tr>`).join('')}</tbody>
+      </table></div>
+      <p class="nota">Datas lidas como <b>${pre.mdy ? 'mês/dia/ano' : 'dia/mês/ano'}</b> (${esc(pre.why)}). Se estiver invertido, troque em Configurações e suba de novo.</p>
+      ${pre.skipped.length ? `<p><b>${pre.skipped.length} mensagem(ns) com dados de extrato que não consegui ler</b> — confira à mão:</p><ul class="plain">${pre.skipped.map(s => `<li>${fmtD(s.d)} ${s.h.slice(0, 5)} · ${esc(s.who)} — ${esc(s.txt)}</li>`).join('')}</ul>` : ''}
+      <div class="row" style="margin-top:12px">
+        <button class="btn" data-act="presave" ${marcados && !UI.salvando ? '' : 'disabled'}>${UI.salvando ? 'Salvando…' : marcados ? 'Salvar ' + plural(marcados, 'dia', 'dias') : 'Nenhum dia marcado'}</button>
+        <button class="btn ghost" data-act="predrop" ${UI.salvando ? 'disabled' : ''}>Descartar</button>
+      </div></div>`;
+  }
+  const hora = PL.lidoEm ? two(PL.lidoEm.getHours()) + ':' + two(PL.lidoEm.getMinutes()) : '';
+  const plOnline = `
+        <p>Lida direto da planilha online, junto com os dias salvos, para o mês do período escolhido.${PL.clientes.length ? ` Só as linhas do cliente <b>${esc(PL.clientes.join(', '))}</b>.` : ''}</p>
+        ${PL.estado === 'ok' ? `<div class="stats"><div><b>${fmtMi(PL.rows.length)}</b><span>linhas lidas às ${hora}</span></div><div><b>${fmtDs(PL.de)} a ${fmtDs(PL.ate)}</b><span>período lido</span></div></div>
+            <p class="nota">Abas lidas: ${esc(PL.abas.join(', ')) || '—'}</p>` :
+          PL.estado === 'erro' ? `<div class="aviso erro">Não consegui ler a planilha: ${esc(PL.erro)}</div>` : ''}
+        <div class="row" style="margin-top:10px"><button class="btn ghost" data-act="plreload">Atualizar agora</button></div>
+        <p class="nota" style="margin-bottom:0">Saem da planilha só as colunas A, B, C, E, F, G, L, M e U. A coluna de conta não é lida, e nada é gravado nela.</p>`;
+  const plOffline = `
+        <div class="aviso">Arquivo aberto fora do Apps Script: não alcança a planilha online. Publicada como app da web, a ferramenta lê a planilha sozinha.</div>
+        <textarea id="exPasteS" style="min-height:110px" placeholder="Só para testar por aqui: cole as linhas copiadas da planilha"></textarea>
+        <div class="row" style="margin-top:10px"><button class="btn ghost" data-act="pasteS">Usar linhas coladas</button></div>
+        ${PL.rows.length ? `<p class="nota" style="margin-bottom:0"><b>${PL.rows.length} linhas coladas</b> na memória.</p>` : ''}`;
+  const linhas = SALVOS.map(x => `<tr>
+      <td class="b">${esc(plabel(x.d, 'dia'))}</td><td class="n">${fmtMi(x.n)}</td><td class="n">${fmtMi(x.mi)}</td><td class="n">${fmtR(x.tot)}</td><td>${quando(x.up)}</td>
+      <td style="text-align:right"><button class="btn sm ghost" data-act="diaed" data-k="${x.d}">Editar</button> <button class="btn sm danger" data-act="diarm" data-k="${x.d}">${UI.rm === x.d ? 'Confirmar remoção' : 'Remover'}</button></td></tr>`).join('');
+  const tt = SALVOS.reduce((o, x) => { o.n += x.n; o.mi += x.mi; o.tot += x.tot; return o; }, {n: 0, mi: 0, tot: 0});
+  main.innerHTML = `${topo}
+    <div class="grid2">
+      <div class="card"><h3>Subir um dia · texto do grupo (WhatsApp)</h3>
+        <label class="drop" id="exDrop">Clique para escolher o arquivo .txt exportado<br><span style="font-weight:600;font-size:.82rem">ou arraste aqui</span><input type="file" id="exFile" accept=".txt,text/plain" multiple></label>
+        <textarea id="exPaste" style="margin-top:10px;min-height:96px" placeholder="…ou cole aqui o texto do grupo&#10;[10/8/26, 1:16:54 PM] Fulano: Sua emissao foi feita com sucesso!&#10;Localizador: ..."></textarea>
+        <div class="row" style="margin-top:10px"><button class="btn" data-act="paste">Ler texto do grupo</button></div>
+        <p class="nota" style="margin-bottom:0">O texto é separado por dia. Você confere a lista e escolhe quais dias salvar; os que já estão salvos não são mexidos, a não ser que você marque para substituir. Linhas de conta e senha são descartadas.</p>
+      </div>
+      <div class="card"><h3>Planilha de vendas</h3>${ONLINE ? plOnline : plOffline}</div>
+    </div>
+    <h3>Dias salvos</h3>
+    ${SALVOS.length ? `<div class="tw"><table>
+        <thead><tr><th>Dia</th><th class="n">Extratos</th><th class="n">Milhas</th><th class="n">Total postado</th><th>Salvo em</th><th></th></tr></thead>
+        <tbody>${linhas}</tbody>
+        <tfoot><tr><td>${plural(SALVOS.length, 'dia salvo', 'dias salvos')}</td><td class="n">${fmtMi(tt.n)}</td><td class="n">${fmtMi(tt.mi)}</td><td class="n">${fmtR(tt.tot)}</td><td colspan="2"></td></tr></tfoot>
+      </table></div>
+      <p class="nota">Valores como foram postados no grupo, antes dos cancelamentos da planilha. O fechamento soma estes dias por dia, semana e mês.</p>`
+      : `<div class="card empty">Nenhum dia salvo ainda. Suba o texto do grupo para começar.</div>`}
+    <div class="grid2">
+      <div class="card"><h3>Configurações</h3>
+        <div class="row">
+          <label class="fld">Milheiro padrão (R$)<input type="number" id="exCfgRate" step="0.01" min="0" value="${DB.cfg.rate}" style="width:130px"></label>
+          <label class="fld">Cobrança por CPF em cancelada (R$)<input type="number" id="exCfgCpf" step="0.01" min="0" value="${DB.cfg.cpfFee}" style="width:130px"></label>
+          <label class="fld">Formato de data do grupo<select id="exCfgFmt">
+            <option value="auto" ${DB.cfg.dfmt === 'auto' ? 'selected' : ''}>Automático</option>
+            <option value="dmy" ${DB.cfg.dfmt === 'dmy' ? 'selected' : ''}>dia/mês/ano</option>
+            <option value="mdy" ${DB.cfg.dfmt === 'mdy' ? 'selected' : ''}>mês/dia/ano</option></select></label>
+        </div>
+        <p class="nota" style="margin-bottom:0">O milheiro padrão serve para conferir o total de cada extrato quando a mensagem não informa outro valor. A cobrança por CPF é o que entra no lugar das milhas quando a emissão está cancelada na planilha.</p>
+      </div>
+      <div class="card"><h3>Onde os dias ficam salvos</h3>
+        ${ONLINE ? `<p>Numa planilha de dados própria da ferramenta, no Drive de quem publicou o app. Não é a planilha de vendas.</p>
+          ${CAR.dados ? `<p><a href="${esc(CAR.dados)}" target="_blank" rel="noopener" style="color:rgb(var(--ac));font-weight:800">Abrir a planilha de dados</a></p>` : '<p class="mut">Ela é criada sozinha quando o primeiro dia for salvo.</p>'}
+          <p class="nota" style="margin-bottom:0">Qualquer pessoa que abrir a ferramenta vê os mesmos dias. Para corrigir, prefira editar por aqui.</p>`
+        : `<div class="aviso" style="margin-top:0">Arquivo aberto fora do Apps Script: os dias ficam guardados só neste navegador, para teste.</div>`}
+      </div>
+    </div>`;
+  bar('Dias salvos · como postado no grupo', [['Dias', fmtMi(SALVOS.length)], ['Extratos', fmtMi(tt.n)], ['Milhas', fmtMi(tt.mi)], ['Total postado', fmtR(tt.tot)]]);
+}
+
+/* subir: o texto vira uma prévia por dia; só o que for marcado é salvo */
+function looksLikeSheet(text) {
+  const head = text.replace(/\r/g, '').split('\n', 8);
+  return head.some(l => l.split('\t').length >= 7) && !head.some(l => RE_A.test(l) || RE_B.test(l));
+}
+function runImport(text) {
+  UI.msg = '';
+  if (CAR.estado !== 'ok') { recado('Espere os dias salvos terminarem de abrir'); return; }
+  if (looksLikeSheet(text)) {
+    if (!ONLINE) return runSheet(text);
+    UI.pre = {err: 'Esse texto parece ser da planilha. Ela é lida online, não precisa colar: aqui entra só o texto exportado do grupo.'}; render(); return;
+  }
+  const p = parseChat(text, DB.cfg.dfmt);
+  if (!p.msgs.length) { UI.pre = {err: 'Não parece a exportação do grupo do WhatsApp.'}; render(); return; }
+  const x = extract(p.msgs);
+  if (!x.em.length) { UI.pre = {err: 'Li ' + x.nmsg + ' mensagens, mas não encontrei nenhum extrato de emissão nelas.'}; render(); return; }
+  const porDia = new Map(), dia = d => { if (!porDia.has(d)) porDia.set(d, {d, em: new Map(), cx: new Map()}); return porDia.get(d); };
+  for (const e of x.em) {            // mesmo localizador postado duas vezes no dia: vale o último, com a hora do primeiro
+    const m = dia(e.d).em, k = e.loc || e.cp || (e.who + '|' + e.mi + '|' + e.tot), ant = m.get(k);
+    m.set(k, {h: ant ? ant.h : e.h, who: e.who, loc: e.loc, cp: e.cp, ped: e.ped, mi: e.mi, tx: e.tx, tot: e.tot, bag: e.bag || 0, rt: e.rt, cpf: e.cpf, pax: e.pax, ed: 0});
+  }
+  for (const c of x.canc) if (porDia.has(c.d)) dia(c.d).cx.set(c.loc || c.cp || c.ped, {h: c.h, who: c.who, loc: c.loc, cp: c.cp, ped: c.ped});
+  const salvo = new Map(SALVOS.map(s => [s.d, s]));
+  const dias = [...porDia.values()].sort((a, b) => b.d.localeCompare(a.d)).map(o => {
+    const em = [...o.em.values()].sort((a, b) => a.h.localeCompare(b.h)), cx = [...o.cx.values()];
+    let mi = 0, tot = 0; for (const e of em) { mi += e.mi; tot += T(e); }
+    tot = Math.round(tot * 100) / 100;
+    const sv = salvo.get(o.d) || null;
+    const st = !sv ? 'novo' : (sv.n === em.length && sv.mi === mi && Math.abs(sv.tot - tot) < 0.01) ? 'igual' : 'dif';
+    return {d: o.d, em, cx, mi, tot, sv, st, on: st === 'novo'};
+  });
+  UI.pre = {dias, nmsg: x.nmsg, apag: x.apag, skipped: x.skipped, mdy: p.mdy, why: p.why};
+  UI.tab = 'dias'; render(); window.scrollTo(0, 0);
+}
+function salvarPre() {
+  const sel = UI.pre.dias.filter(x => x.on);
+  if (!sel.length || UI.salvando) return;
+  UI.salvando = true; render();
+  const payload = sel.map(x => ({d: x.d, em: x.em.map(paraLinha), cx: x.cx.map(c => [c.h, c.who, c.loc, c.cp, c.ped])}));
+  chamar('fxSalvarDias', JSON.stringify(payload)).then(() => {
+    UI.salvando = false; UI.pre = null;
+    UI.msg = plural(sel.length, 'dia salvo', 'dias salvos') + ': ' + sel.map(x => fmtD(x.d)).reverse().join(', ') + '.';
+    abrir(true);
+  }, err => { UI.salvando = false; render(); recado('Não consegui salvar: ' + err.message); });
+}
+function runSheet(text) {
+  const p = parseSheet(text);
+  if (!p.rows.length) { UI.pre = {err: 'Não encontrei linhas de planilha com data e localizador neste texto.'}; render(); return; }
+  const ds = p.rows.map(r => r.d).sort();
+  PL.rows = p.rows; PL.de = ds[0]; PL.ate = ds[ds.length - 1]; PL.abas = []; PL.estado = 'colada';
+  UI.pre = {kind: 'sheet', linhas: p.rows.length, ign: p.ign};
+  UI.c.view = '';
+  render(); window.scrollTo(0, 0);
+}
+async function importFiles(files) {
+  let text = '';
+  for (const f of files) text += (await f.text()) + '\n';
+  runImport(text);
+}
+function removerDia(d) {
+  UI.rm = ''; UI.msg = '';
+  chamar('fxRemoverDia', d).then(() => { UI.msg = 'Dia ' + fmtD(d) + ' removido.'; abrir(!SALVOS.some(s => s.d !== d && s.d >= CAR.de && s.d <= CAR.ate)); },
+    err => { render(); recado('Não consegui remover: ' + err.message); });
+  recado('Removendo o dia ' + fmtD(d) + '…');
+}
+
+/* editar um dia salvo: mexe numa cópia; só vale depois de "Salvar alterações" */
+function abrirEditor(d) {
+  UI.ed = {d, estado: 'lendo', rows: [], erros: new Set(), sujo: false}; UI.msg = ''; render();
+  chamar('fxLerDia', d).then(r => {
+    if (!UI.ed || UI.ed.d !== d) return;
+    UI.ed.rows = r.em.map(l => ({h: l[1], who: l[2], loc: l[3], cp: l[4], ped: l[5], mi: fmtMi(l[6] || 0), tx: nv(l[7]), tot: nv(l[8]), bag: l[9] || 0, rt: l[10], cpf: l[11] == null ? '' : String(l[11]), pax: l[12], ed: l[13] ? 1 : 0}))
+      .sort((a, b) => a.h.localeCompare(b.h));
+    UI.ed.estado = 'ok'; render();
+  }, err => { UI.ed = null; render(); recado('Não consegui abrir o dia: ' + err.message); });
+}
+function renderEditor() {
+  const ed = UI.ed, main = $('#exMain');
+  if (ed.estado === 'lendo') { main.innerHTML = `<div class="card carregando"><div class="spin"></div>Abrindo o dia ${fmtD(ed.d)}…</div>`; bar('Editar dia', []); return; }
+  const campo = (i, f, v, cls, ph) => `<input class="ed ${cls}" data-i="${i}" data-f="${f}" value="${esc(v)}" placeholder="${ph || ''}" ${f === 'mi' || f === 'cpf' ? 'inputmode="numeric"' : f === 'tx' || f === 'tot' ? 'inputmode="decimal"' : ''} aria-label="${f} da linha ${i + 1}">`;
+  const rows = ed.rows.map((r, i) => `<tr class="${ed.erros.has(i) ? 'err' : ''}">
+      <td>${r.h ? r.h.slice(0, 5) : '—'}<br><span class="sub">${quem(r.who)}${r.ed ? ' · editada' : ''}</span></td>
+      <td>${campo(i, 'loc', r.loc, 'loc', 'ABC123')}</td><td>${campo(i, 'cp', r.cp, 'cp', 'LA…')}</td><td>${campo(i, 'ped', r.ped, 'ped')}</td>
+      <td class="n">${campo(i, 'mi', r.mi, 'num')}</td><td class="n">${campo(i, 'tx', r.tx, 'num')}</td><td class="n">${campo(i, 'tot', r.tot, 'num', 'calcula')}</td><td class="n">${campo(i, 'cpf', r.cpf, 'cpfs')}</td>
+      <td><button class="btn sm danger" data-act="edrm" data-k="${i}" title="Tirar esta emissão do dia">Tirar</button></td></tr>`).join('');
+  const sal = ed.estado === 'salvando';
+  main.innerHTML = `
+    <div class="row between" style="margin:16px 0 10px">
+      <h3 style="margin:0">Editar o dia ${esc(plabel(ed.d, 'dia'))} · ${plural(ed.rows.length, 'emissão', 'emissões')}</h3>
+      <div class="row">
+        <button class="btn ghost" data-act="edadd" ${sal ? 'disabled' : ''}>+ Adicionar emissão</button>
+        <button class="btn" data-act="edsave" ${sal ? 'disabled' : ''}>${sal ? 'Salvando…' : 'Salvar alterações'}</button>
+        <button class="btn ghost" data-act="edcancel" ${sal ? 'disabled' : ''}>Cancelar</button>
+      </div>
+    </div>
+    ${ed.erros.size ? `<div class="aviso erro">${plural(ed.erros.size, 'linha marcada precisa', 'linhas marcadas precisam')} de localizador (ou compra) e de milhas em número.</div>` : ''}
+    ${ed.rows.length ? `<div class="tw"><table class="edit">
+      <thead><tr><th>Hora · emissor</th><th>Localizador</th><th>Compra</th><th>Pedido</th><th class="n">Milhas</th><th class="n">Taxas (R$)</th><th class="n">Total (R$)</th><th class="n">CPFs</th><th></th></tr></thead>
+      <tbody>${rows}</tbody></table></div>` : `<div class="card empty">Nenhuma emissão neste dia. Adicione uma, ou cancele e use “Remover” na lista de dias para apagar o dia.</div>`}
+    <p class="nota">Nada muda no que está salvo até você clicar em “Salvar alterações”. Total em branco é calculado pelo milheiro (milhas × milheiro + taxas). Esta tela mexe só nos extratos do grupo; a planilha de vendas não é alterada.</p>`;
+  bar('Editando ' + fmtD(ed.d), [['Emissões', fmtMi(ed.rows.length)], ['Situação', ed.sujo ? 'alterações não salvas' : 'sem alterações']]);
+}
+function salvarEditor() {
+  const ed = UI.ed; if (!ed || ed.estado !== 'ok') return;
+  if (!ed.rows.length) { recado('O dia ficou sem emissões: use “Remover” na lista de dias'); return; }
+  ed.erros = new Set();
+  const em = ed.rows.map((r, i) => {
+    const loc = r.loc.trim().toUpperCase(), cp = r.cp.trim().toUpperCase(), miTxt = String(r.mi).replace(/[.\s]/g, '');
+    const mi = /^\d+$/.test(miTxt) ? parseInt(miTxt, 10) : NaN;
+    const tx = String(r.tx).trim() === '' ? null : money(String(r.tx)), tot = String(r.tot).trim() === '' ? null : money(String(r.tot));
+    const cpfTxt = String(r.cpf).trim(), cpf = cpfTxt === '' ? null : parseInt(cpfTxt, 10);
+    if ((!loc && !cp) || isNaN(mi) || (cpf !== null && !(cpf >= 0)) || (String(r.tx).trim() !== '' && tx === null) || (String(r.tot).trim() !== '' && tot === null)) ed.erros.add(i);
+    return [r.h, r.who, loc, cp, r.ped.trim(), mi, tx, tot, r.bag || 0, r.rt, cpf, r.pax, r.ed ? 1 : 0];
+  });
+  if (ed.erros.size) { render(); return; }
+  ed.estado = 'salvando'; render();
+  chamar('fxSalvarDias', JSON.stringify([{d: ed.d, em, cx: null}])).then(() => {
+    UI.msg = 'Dia ' + fmtD(ed.d) + ' salvo com ' + plural(em.length, 'emissão', 'emissões') + '.'; UI.ed = null; abrir(false);
+  }, err => { ed.estado = 'ok'; render(); recado('Não consegui salvar: ' + err.message); });
+}
+
+/* ---------------- eventos ---------------- */
+root.addEventListener('click', ev => {
+  const t = ev.target.closest('[data-tab],[data-act]'); if (!t || !root.contains(t) || t.disabled) return;
+  if (t.dataset.tab) {
+    if (UI.ed && UI.ed.sujo) { recado('Salve ou cancele a edição do dia antes de sair'); return; }
+    UI.tab = t.dataset.tab; UI.ed = null; UI.rm = ''; render(); return;
+  }
+  const a = t.dataset.act, k = t.dataset.k;
+  if (a === 'gran') { UI.gran = k; UI.open = null; render(); }
+  else if (a === 'open') { UI.open = UI.open === k ? null : k; render(); }
+  else if (a === 'atalho') { const r = faixaAtalho(k); mudarPeriodo(r[0], r[1]); }
+  else if (a === 'clearf') { Object.assign(UI.f, {who: '', q: '', al: false, lim: 300}); render(); }
+  else if (a === 'more') { UI.f.lim += 300; drawEm(); }
+  else if (a === 'paste') { const v = $('#exPaste').value; if (v.trim()) runImport(v); else recado('Cole o texto do grupo primeiro'); }
+  else if (a === 'pasteS') { const v = $('#exPasteS').value; if (v.trim()) runSheet(v); else recado('Cole as linhas da planilha primeiro'); }
+  else if (a === 'presave') salvarPre();
+  else if (a === 'predrop') { UI.pre = null; render(); }
+  else if (a === 'diaed') abrirEditor(k);
+  else if (a === 'diarm') {
+    if (UI.rm !== k) { UI.rm = k; render(); setTimeout(() => { if (UI.rm === k) { UI.rm = ''; if (UI.tab === 'dias' && !UI.ed) render(); } }, 5000); }
+    else removerDia(k);
+  }
+  else if (a === 'edadd') { UI.ed.rows.unshift({h: '', who: 'adicionada à mão', loc: '', cp: '', ped: '', mi: '', tx: '', tot: '', bag: 0, rt: null, cpf: '', pax: null, ed: 1}); UI.ed.erros = new Set(); UI.ed.sujo = true; render(); const el = $('input.ed'); if (el) el.focus(); }
+  else if (a === 'edrm') { UI.ed.rows.splice(+k, 1); UI.ed.erros = new Set(); UI.ed.sujo = true; render(); }
+  else if (a === 'edsave') salvarEditor();
+  else if (a === 'edcancel') { UI.ed = null; render(); }
+  else if (a === 'cview') { UI.c.view = k; UI.resTodos = ''; drawConc(); }
+  else if (a === 'res1' || a === 'reabrir' || a === 'restodos') {
+    const L = listasConc().L;
+    if (a === 'res1') { const it = PEND.map(v => L[v]).flat().find(x => x.k === k); if (it) resolver([{k: it.k, d: it.d, s: it.sig, f: vaiF(it)}]); }
+    else if (a === 'reabrir') { const it = L.res.find(x => x.k === k); if (it) resolver([{k: it.k, d: it.d, s: '', f: vaiF(it)}]); }
+    else if (UI.resTodos !== k) { UI.resTodos = k; drawConc(); setTimeout(() => { if (UI.resTodos === k) { UI.resTodos = ''; if (UI.tab === 'conc' && CAR.estado === 'ok') drawConc(); } }, 6000); }
+    else resolver(L[k].map(it => ({k: it.k, d: it.d, s: it.sig, f: vaiF(it)})));
+  }
+  else if (a === 'plreload' || a === 'recarregar') abrir(!UI.p.de);
+  else if (a === 'pdf') baixarPdf();
+});
+root.addEventListener('input', ev => {
+  const el = ev.target;
+  if (el.id === 'exFQ') { UI.f.q = el.value; UI.f.lim = 300; drawEm(); }
+  else if (el.classList.contains('ed') && UI.ed) {          // edição de um campo: guarda sem redesenhar, para não perder o foco
+    const r = UI.ed.rows[+el.dataset.i]; if (!r) return;
+    r[el.dataset.f] = el.value; r.ed = 1;
+    if (!UI.ed.sujo) { UI.ed.sujo = true; bar('Editando ' + fmtD(UI.ed.d), [['Emissões', fmtMi(UI.ed.rows.length)], ['Situação', 'alterações não salvas']]); }
+  }
+});
+root.addEventListener('change', ev => {
+  const el = ev.target, id = el.id;
+  if (el.dataset && el.dataset.cpf !== undefined) {          // CPFs usados em uma cancelada
+    const key = el.dataset.cpf, v = el.value.trim(), n = parseInt(v, 10), vale = v !== '' && n >= 0;
+    if (vale) DB.cpf[key] = n; else delete DB.cpf[key];
+    render();
+    chamar('fxSalvarCpf', key, vale ? n : '').catch(err => recado('Não consegui salvar os CPFs de ' + key + ': ' + err.message));
+    return;
+  }
+  if (el.dataset && el.dataset.pre !== undefined) { UI.pre.dias[+el.dataset.pre].on = el.checked; render(); return; }
+  if (id === 'exPDe' || id === 'exPAte') {
+    if (!el.value) return;
+    let de = UI.p.de, ate = UI.p.ate;
+    if (id === 'exPDe') { de = el.value; if (ate < de) ate = de; } else { ate = el.value; if (de > ate) de = ate; }
+    mudarPeriodo(de, ate);
+  }
+  else if (id === 'exPdfLista') UI.pdfLista = el.checked;
+  else if (id === 'exFWho') { UI.f.who = el.value; drawEm(); }
+  else if (id === 'exFAl') { UI.f.al = el.checked; drawEm(); }
+  else if (id === 'exKCli') { UI.c.cli = el.value; drawConc(); }
+  else if (id === 'exKCia') { UI.c.cia = el.value; drawConc(); }
+  else if (id === 'exCfgRate' || id === 'exCfgCpf' || id === 'exCfgFmt') {
+    const v = parseFloat(el.value);
+    if (id === 'exCfgRate') { if (!(v > 0)) return; DB.cfg.rate = v; }
+    else if (id === 'exCfgCpf') { if (!(v >= 0)) return; DB.cfg.cpfFee = v; }
+    else DB.cfg.dfmt = el.value;
+    chamar('fxSalvarCfg', JSON.stringify(DB.cfg)).then(() => recado('Configuração salva'), err => recado('Não consegui salvar a configuração: ' + err.message));
+  }
+  else if (id === 'exFile') { if (el.files.length) importFiles([...el.files]); }
+});
+root.addEventListener('dragover', ev => { const d = ev.target.closest && ev.target.closest('#exDrop'); if (d) { ev.preventDefault(); d.classList.add('over'); } });
+root.addEventListener('dragleave', ev => { const d = ev.target.closest && ev.target.closest('#exDrop'); if (d) d.classList.remove('over'); });
+root.addEventListener('drop', ev => { const d = ev.target.closest && ev.target.closest('#exDrop'); if (d) { ev.preventDefault(); d.classList.remove('over'); if (ev.dataTransfer.files.length) importFiles([...ev.dataTransfer.files]); } });
+window.addEventListener('beforeunload', ev => { if (UI.ed && UI.ed.sujo) { ev.preventDefault(); ev.returnValue = ''; } });
+
+/* ---------------- início ---------------- */
+abrir(true);
+})();
+</script>
+
+</main>
+
+<!-- ==================== CASCA: ÍCONE E TEMA ==================== -->
+<script>
+(function(){
+  'use strict';
+  const CHAVE = 'mp-extratos-casca';
+  let escuro = false;
+  document.getElementById('selo-icone').src = ICONE;
+  function aplicarTema(){
+    document.body.classList.toggle('escuro', escuro);
+    const bt = document.getElementById('btTema');
+    bt.textContent = escuro ? '☀' : '☾';
+    bt.setAttribute('aria-pressed', escuro ? 'true' : 'false');
+  }
+  document.getElementById('btTema').addEventListener('click', () => {
+    escuro = !escuro; aplicarTema();
+    try{ localStorage.setItem(CHAVE, JSON.stringify({escuro})); }catch(e){}
+  });
+  let salvo = null;
+  try{ salvo = JSON.parse(localStorage.getItem(CHAVE) || 'null'); }catch(e){}
+  if(salvo && typeof salvo.escuro === 'boolean') escuro = salvo.escuro;
+  else if(window.matchMedia) escuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  aplicarTema();
+})();
+</script>
+</body>
+</html>
